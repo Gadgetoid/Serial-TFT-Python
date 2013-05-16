@@ -123,3 +123,87 @@ def analogue_hand(origin_x,origin_y,radius,minutes):
 	y_a = origin_y - 6*math.cos(angle)
 	
 	return draw_line(int(round(x_a)),int(round(y_a)),int(round(x)),int(round(y)))
+
+
+# Colour Themes
+
+
+# If you're using the firmware with colour palette support
+# you can write one of the below themes to set it up
+# Tip; to use dark and light at the same time, 
+# move dark to indexes 8-15
+
+# The TFT uses 16 bit packed colour, hex is 24 bit,
+# so expect some loss of accuracy
+
+# Solarized
+COL_THEME_SOLARIZED = set_color_packed(0,0x1AB)   # black 
+COL_THEME_SOLARIZED += set_color_packed(1,0x245A) # blue
+COL_THEME_SOLARIZED += set_color_packed(2,0xD985) # red
+COL_THEME_SOLARIZED += set_color_packed(3,0x84C0) # green
+COL_THEME_SOLARIZED += set_color_packed(4,0x2D13) # cyan
+COL_THEME_SOLARIZED += set_color_packed(5,0xD1B0) # magenta
+COL_THEME_SOLARIZED += set_color_packed(6,0xB440) # yellow
+COL_THEME_SOLARIZED += set_color_packed(7,0xEF5A) # white
+
+# Flat UI
+COL_THEME_FLAT_UI = set_color_rgb(0,0x34,0x49,0x5E)  # black 
+COL_THEME_FLAT_UI += set_color_rgb(1,0x34,0x98,0xDB) # blue
+COL_THEME_FLAT_UI += set_color_rgb(2,0xE7,0x4C,0x3C) # red
+COL_THEME_FLAT_UI += set_color_rgb(3,0x2E,0xCC,0x71) # green
+COL_THEME_FLAT_UI += set_color_rgb(4,0x1A,0xBC,0x9C) # cyan
+COL_THEME_FLAT_UI += set_color_rgb(5,0x9B,0x59,0xB6) # magenta
+COL_THEME_FLAT_UI += set_color_rgb(6,0xF1,0xC4,0x0F) # yellow
+COL_THEME_FLAT_UI += set_color_rgb(7,0xEC,0xF9,0xF1) # white
+
+# Dark
+
+COL_THEME_DARK = set_color_hex(0,'#000000') # black 
+COL_THEME_DARK += set_color_hex(1,'#003366') # blue
+COL_THEME_DARK += set_color_hex(2,'#660000') # red
+COL_THEME_DARK += set_color_hex(3,'#006633') # green
+COL_THEME_DARK += set_color_hex(4,'#336666') # cyan
+COL_THEME_DARK += set_color_hex(5,'#660066') # magenta
+COL_THEME_DARK += set_color_hex(6,'#996600') # yellow
+COL_THEME_DARK += set_color_hex(7,'#DDDDDD') # white
+
+# Light
+
+COL_THEME_LIGHT = set_color_hex(0,'#222222') # black 
+COL_THEME_LIGHT += set_color_hex(1,'#0099FF') # blue
+COL_THEME_LIGHT += set_color_hex(2,'#FF3333') # red
+COL_THEME_LIGHT += set_color_hex(3,'#99FF33') # green
+COL_THEME_LIGHT += set_color_hex(4,'#33FFFF') # cyan
+COL_THEME_LIGHT += set_color_hex(5,'#FF3399') # magenta
+COL_THEME_LIGHT += set_color_hex(6,'#FFFF33') # yellow
+COL_THEME_LIGHT += set_color_hex(7,'#FFFFFF') # white
+
+# If you don't want to reset your serial TFT
+# use this theme to return the colours to defaults
+
+COL_THEME_DEFAULT = set_color_packed(0,0x0000) # black 
+COL_THEME_DEFAULT += set_color_packed(1,0x001F) # blue
+COL_THEME_DEFAULT += set_color_packed(2,0xF800) # red
+COL_THEME_DEFAULT += set_color_packed(3,0x07E0) # green
+COL_THEME_DEFAULT += set_color_packed(4,0x07FF) # cyan
+COL_THEME_DEFAULT += set_color_packed(5,0xF81F) # magenta
+COL_THEME_DEFAULT += set_color_packed(6,0xFFE0) # yellow
+COL_THEME_DEFAULT += set_color_packed(7,0xFFFF) # white
+
+COL_THEME_MATRIX = set_color_hex(0,'#002100') # black 
+COL_THEME_MATRIX += set_color_hex(1,'#005200') # blue
+COL_THEME_MATRIX += set_color_hex(2,'#006300') # red
+COL_THEME_MATRIX += set_color_hex(3,'#007400') # green
+COL_THEME_MATRIX += set_color_hex(4,'#008500') # cyan
+COL_THEME_MATRIX += set_color_hex(5,'#009600') # magenta
+COL_THEME_MATRIX += set_color_hex(6,'#00A700') # yellow
+COL_THEME_MATRIX += set_color_hex(7,'#00FF00') # white
+
+COL_THEME_RED = set_color_hex(0,'#210000') # black 
+COL_THEME_RED += set_color_hex(1,'#520000') # blue
+COL_THEME_RED += set_color_hex(2,'#630000') # red
+COL_THEME_RED += set_color_hex(3,'#740000') # green
+COL_THEME_RED += set_color_hex(4,'#850000') # cyan
+COL_THEME_RED += set_color_hex(5,'#960000') # magenta
+COL_THEME_RED += set_color_hex(6,'#A70000') # yellow
+COL_THEME_RED += set_color_hex(7,'#FF0000') # white

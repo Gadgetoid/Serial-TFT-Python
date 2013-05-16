@@ -16,7 +16,6 @@ import math
 from time import localtime, strftime
 from serialtft import *
 
-
 CLOCK_ORIGIN_X = SCREEN_WIDTH_HALF
 CLOCK_ORIGIN_Y = SCREEN_HEIGHT_HALF-1
 CLOCK_RADIUS	  = SCREEN_HEIGHT_HALF-20
@@ -29,72 +28,10 @@ CLOCK_HOUR_HAND	= COL_BLUE
 CLOCK_MINUTE_HAND= COL_BLUE
 CLOCK_SECOND_HAND= COL_RED
 
-DEBUG = True
-
 serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
 
-# If you're using the firmware with colour palette support
-# Uncomment one of the below themes to set it up
-# Tip; to use dark and light at the same time, 
-# move dark to indexes 8-15
-
-# The TFT uses 16 bit packed colour, hex is 24 bit,
-# so expect some loss of accuracy
-
-# Solarized
-#serialport.write(set_color_packed(0,0x1AB))  # black 
-#serialport.write(set_color_packed(1,0x245A)) # blue
-#serialport.write(set_color_packed(2,0xD985)) # red
-#serialport.write(set_color_packed(3,0x84C0)) # green
-#serialport.write(set_color_packed(4,0x2D13)) # cyan
-#serialport.write(set_color_packed(5,0xD1B0)) # magenta
-#serialport.write(set_color_packed(6,0xB440)) # yellow
-#serialport.write(set_color_packed(7,0xEF5A)) # white
-
-# Flat UI
-#serialport.write(set_color_rgb(0,0x34,0x49,0x5E)) # black 
-#serialport.write(set_color_rgb(1,0x34,0x98,0xDB)) # blue
-#serialport.write(set_color_rgb(2,0xE7,0x4C,0x3C)) # red
-#serialport.write(set_color_rgb(3,0x2E,0xCC,0x71)) # green
-#serialport.write(set_color_rgb(4,0x1A,0xBC,0x9C)) # cyan
-#serialport.write(set_color_rgb(5,0x9B,0x59,0xB6)) # magenta
-#serialport.write(set_color_rgb(6,0xF1,0xC4,0x0F)) # yellow
-#serialport.write(set_color_rgb(7,0xEC,0xF9,0xF1)) # white
-
-# Dark
-
-#serialport.write(set_color_hex(0,'#000000')) # black 
-#serialport.write(set_color_hex(1,'#003366')) # blue
-#serialport.write(set_color_hex(2,'#660000')) # red
-#serialport.write(set_color_hex(3,'#006633')) # green
-#serialport.write(set_color_hex(4,'#336666')) # cyan
-#serialport.write(set_color_hex(5,'#660066')) # magenta
-#serialport.write(set_color_hex(6,'#996600')) # yellow
-#serialport.write(set_color_hex(7,'#DDDDDD')) # white
-
-# Light
-
-#serialport.write(set_color_hex(0,'#222222')) # black 
-#serialport.write(set_color_hex(1,'#0099FF')) # blue
-#serialport.write(set_color_hex(2,'#FF3333')) # red
-#serialport.write(set_color_hex(3,'#99FF33')) # green
-#serialport.write(set_color_hex(4,'#33FFFF')) # cyan
-#serialport.write(set_color_hex(5,'#FF3399')) # magenta
-#serialport.write(set_color_hex(6,'#FFFF33')) # yellow
-#serialport.write(set_color_hex(7,'#FFFFFF')) # white
-
-# If you don't want to reset your serial TFT
-# user this theme to return the colours to defaults
-
-# Default
-#serialport.write(set_color_packed(0,0x0000)) # black 
-#serialport.write(set_color_packed(1,0x001F)) # blue
-#serialport.write(set_color_packed(2,0xF800)) # red
-#serialport.write(set_color_packed(3,0x07E0)) # green
-#serialport.write(set_color_packed(4,0x07FF)) # cyan
-#serialport.write(set_color_packed(5,0xF81F)) # magenta
-#serialport.write(set_color_packed(6,0xFFE0)) # yellow
-#serialport.write(set_color_packed(7,0xFFFF)) # white
+# Change this to set the theme if you're using firmware that supports it
+# serialport.write(COL_THEME_RED)
 
 # Clear Screen
 serialport.write(SCREEN_LANDSCAPE)
