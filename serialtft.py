@@ -85,7 +85,7 @@ def set_color_packed(col,colour):
 	low,high = divmod(colour,256)
 	return CMD_BEGIN + chr(15) + chr(col) + chr(low) + chr(high) + CMD_END
 
-def set_color(col,r,g,b):
+def set_color_rgb(col,r,g,b):
 	value = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 	low,high = divmod(value,256)
 	return CMD_BEGIN + chr(15) + chr(col) + chr(low) + chr(high) + CMD_END
@@ -106,7 +106,7 @@ def draw_box(x1,y1,x2,y2):
 	return CMD_BEGIN + chr(9) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
 
 def draw_filled_box(x1,y1,x2,y2):
-	return CMD_BEGIN + chr(9) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
+	return CMD_BEGIN + chr(10) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
 
 def draw_circle(x,y,radius):
 	return CMD_BEGIN + chr(11) + chr(x) + chr(y) + chr(radius) + CMD_END
