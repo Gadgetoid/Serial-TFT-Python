@@ -79,7 +79,7 @@ def hex_to_rgb(value):
 
 def set_color_hex(col,hex):
 	colour = hex_to_rgb(hex)
-	return set_color(col,colour[0],colour[1],colour[2])
+	return set_color_rgb(col,colour[0],colour[1],colour[2])
 
 def set_color_packed(col,colour):
 	low,high = divmod(colour,256)
