@@ -1,3 +1,6 @@
+# coding=ASCII
+import math
+
 CMD_BEGIN	= chr(27)
 CMD_END		= chr(255)
 RETURN		= chr(13)
@@ -41,6 +44,16 @@ SCREEN_WIDTH_HALF	= SCREEN_WIDTH/2
 SCREEN_HEIGHT_HALF	= SCREEN_HEIGHT/2
 
 # Command helper functions
+
+def set_color(col,r,g,b):
+	value = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+	print value
+	#high = (value >> 8) & 0xff
+	#low = value & 0xff
+	high,low = divmod(value,256)
+	print low
+	print high
+	return CMD_BEGIN + chr(15) + chr(col) + chr(high) + chr(low) + CMD_END
 
 def draw_bitmap(file,x,y):
 	return CMD_BEGIN + chr(13) + chr(x) + chr(y) + file + CMD_END

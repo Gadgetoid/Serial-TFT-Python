@@ -1,3 +1,83 @@
+# coding=ASCII
+import math
+
+CMD_BEGIN	= chr(27)
+CMD_END		= chr(255)
+RETURN		= chr(13)
+
+BG_COL_BLACK		= CMD_BEGIN + chr(2) + chr(0) + CMD_END
+BG_COL_BLUE		= CMD_BEGIN + chr(2) + chr(1) + CMD_END
+BG_COL_RED		= CMD_BEGIN + chr(2) + chr(2) + CMD_END
+BG_COL_GREEN		= CMD_BEGIN + chr(2) + chr(3) + CMD_END
+BG_COL_CYAN		= CMD_BEGIN + chr(2) + chr(4) + CMD_END
+BG_COL_MAGENTA	= CMD_BEGIN + chr(2) + chr(5) + CMD_END
+BG_COL_YELLOW	= CMD_BEGIN + chr(2) + chr(6) + CMD_END
+BG_COL_WHITE		= CMD_BEGIN + chr(2) + chr(7) + CMD_END
+
+FG_COL_BLACK		= CMD_BEGIN + chr(1) + chr(0) + CMD_END
+FG_COL_BLUE		= CMD_BEGIN + chr(1) + chr(1) + CMD_END
+FG_COL_RED		= CMD_BEGIN + chr(1) + chr(2) + CMD_END
+FG_COL_GREEN		= CMD_BEGIN + chr(1) + chr(3) + CMD_END
+FG_COL_CYAN		= CMD_BEGIN + chr(1) + chr(4) + CMD_END
+FG_COL_MAGENTA	= CMD_BEGIN + chr(1) + chr(5) + CMD_END
+FG_COL_YELLOW	= CMD_BEGIN + chr(1) + chr(6) + CMD_END
+FG_COL_WHITE		= CMD_BEGIN + chr(1) + chr(7) + CMD_END
+
+LINE_BEGINNING	= CMD_BEGIN + chr(5) + CMD_END
+TEXT_BEGINNING 	= CMD_BEGIN + chr(6) + chr(0) + chr(0) + CMD_END
+
+SCREEN_PORTRAIT_LEFT 			= CMD_BEGIN + chr(3) + chr(0) + CMD_END
+SCREEN_LANDSCAPE_UPSIDEDOWN  	= CMD_BEGIN + chr(3) + chr(1) + CMD_END
+SCREEN_PORTRAIT_RIGHT 		= CMD_BEGIN + chr(3) + chr(2) + CMD_END
+SCREEN_LANDSCAPE 			= CMD_BEGIN + chr(3) + chr(3) + CMD_END
+
+FONT_SIZE_SMALL 	= CMD_BEGIN + chr(4) + chr(1) + CMD_END
+FONT_SIZE_MEDIUM = CMD_BEGIN + chr(4) + chr(2) + CMD_END
+FONT_SIZE_LARGE 	= CMD_BEGIN + chr(4) + chr(3) + CMD_END
+
+CLEAR_SCREEN		= CMD_BEGIN + chr(0) + CMD_END
+
+SCREEN_WIDTH		= 160
+SCREEN_HEIGHT	= 128
+
+SCREEN_WIDTH_HALF	= SCREEN_WIDTH/2
+SCREEN_HEIGHT_HALF	= SCREEN_HEIGHT/2
+
+# Command helper functions
+
+def draw_bitmap(file,x,y):
+	return CMD_BEGIN + chr(13) + chr(x) + chr(y) + file + CMD_END
+
+def goto_pixel(pixel_x,pixel_y):
+	return CMD_BEGIN + chr(7) + chr(pixel_x) + chr(pixel_y) + CMD_END
+
+def goto_char(char_x,char_y):
+	return CMD_BEGIN + chr(6) + chr(char_x) + chr(char_y) + CMD_END
+
+def draw_line(x1,y1,x2,y2):
+	return CMD_BEGIN + chr(8) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
+
+def draw_box(x1,y1,x2,y2):
+	return CMD_BEGIN + chr(9) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
+
+def draw_filled_box(x1,y1,x2,y2):
+	return CMD_BEGIN + chr(9) + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END
+
+def draw_circle(x,y,radius):
+	return CMD_BEGIN + chr(11) + chr(x) + chr(y) + chr(radius) + CMD_END
+
+def draw_filled_circle(x,y,radius):
+	return CMD_BEGIN + chr(12) + chr(x) + chr(y) + chr(radius) + CMD_END
+
+def analogue_hand(origin_x,origin_y,radius,minutes):
+	angle = (minutes / 60.0) * (2*math.pi)
+	x = origin_x + radius*math.sin(angle)
+	y = origin_y - radius*math.cos(angle)
+
+	x_a = origin_x + 6*math.sin(angle)
+	y_a = origin_y - 6*math.cos(angle)
+	
+	return draw_line(int(round(x_a)),int(round(y_a)),int(round(x)),int(round(y)))
 # coding=ASCII#
 # Hobbytronics TFT - example code (serial_tft.py)
 # Displays Raspberry Pi Logo (create as bitmap 160x128)
@@ -12,9 +92,7 @@
 import serial
 import time
 import socket
-import math
 from time import localtime, strftime
-from serialtft import *
 
 
 CLOCK_ORIGIN_X = SCREEN_WIDTH_HALF
@@ -24,15 +102,6 @@ CLOCK_RADIUS	  = SCREEN_HEIGHT_HALF-20
 DEBUG = True
 
 serialport = serial.Serial("/dev/tty.usbserial-A4013DP7", 9600, timeout=0.5)
-
-serialport.write(set_color(0,255,0,0))
-serialport.write(set_color(1,255,255,255))
-serialport.write(set_color(2,55,255,0))
-serialport.write(set_color(3,55,255,0))
-serialport.write(set_color(4,55,255,255))
-serialport.write(set_color(5,55,255,0))
-serialport.write(set_color(6,55,255,255))
-serialport.write(set_color(7,55,255,0))
 
 # Clear Screen
 serialport.write(SCREEN_LANDSCAPE)

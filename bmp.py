@@ -19,7 +19,7 @@ CLOCK_RADIUS	  = SCREEN_HEIGHT_HALF-20
 
 DEBUG = True
 
-serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
+serialport = serial.Serial("/dev/tty.usbserial-A4013DP7", 9600, timeout=0.5)
 
 # Clear Screen
 serialport.write(SCREEN_LANDSCAPE)
