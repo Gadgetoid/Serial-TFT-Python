@@ -26,13 +26,13 @@ DEBUG = True
 serialport = serial.Serial("/dev/tty.usbserial-A4013DP7", 9600, timeout=0.5)
 
 serialport.write(set_color(0,255,0,0))
-serialport.write(set_color(1,255,255,255))
-serialport.write(set_color(2,55,255,0))
-serialport.write(set_color(3,55,255,0))
-serialport.write(set_color(4,55,255,255))
-serialport.write(set_color(5,55,255,0))
-serialport.write(set_color(6,55,255,255))
-serialport.write(set_color(7,55,255,0))
+serialport.write(set_color(1,0,0,0))
+serialport.write(set_color(2,255,255,255))
+serialport.write(set_color(3,255,255,255))
+serialport.write(set_color(4,255,255,255))
+serialport.write(set_color(5,255,255,255))
+#serialport.write(set_color(6,255,255,255))
+#serialport.write(set_color(7,255,255,255))
 
 # Clear Screen
 serialport.write(SCREEN_LANDSCAPE)

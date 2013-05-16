@@ -51,8 +51,6 @@ def set_color(col,r,g,b):
 	#high = (value >> 8) & 0xff
 	#low = value & 0xff
 	high,low = divmod(value,256)
-	print low
-	print high
 	return CMD_BEGIN + chr(15) + chr(col) + chr(high) + chr(low) + CMD_END
 
 def draw_bitmap(file,x,y):
