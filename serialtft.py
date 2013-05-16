@@ -5,6 +5,17 @@ CMD_BEGIN	= chr(27)
 CMD_END		= chr(255)
 RETURN		= chr(13)
 
+# Colour values
+COL_BLACK	= 0
+COL_BLUE		= 1
+COL_RED		= 2
+COL_GREEN	= 3
+COL_CYAN		= 4
+COL_MAGENTA	= 5
+COL_YELLOW	= 6
+COL_WHITE	= 7
+
+# Redundant shorthand for BG/FG colour commands
 BG_COL_BLACK		= CMD_BEGIN + chr(2) + chr(0) + CMD_END
 BG_COL_BLUE		= CMD_BEGIN + chr(2) + chr(1) + CMD_END
 BG_COL_RED		= CMD_BEGIN + chr(2) + chr(2) + CMD_END
@@ -45,13 +56,29 @@ SCREEN_HEIGHT_HALF	= SCREEN_HEIGHT/2
 
 # Command helper functions
 
+def fg_color(color):
+	return CMD_BEGIN + chr(1) + chr(color) + CMD_END
+
+def bg_color(color):
+	return CMD_BEGIN + chr(2) + chr(color) + CMD_END
+
+def hex_to_rgb(value):
+	value = value.lstrip('#')
+	lv = len(value)
+	return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+
+def set_color_hex(col,hex):
+	colour = hex_to_rgb(hex)
+	return set_color(col,colour[0],colour[1],colour[2])
+
+def set_color_packed(col,colour):
+	low,high = divmod(colour,256)
+	return CMD_BEGIN + chr(15) + chr(col) + chr(low) + chr(high) + CMD_END
+
 def set_color(col,r,g,b):
 	value = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
-	print value
-	#high = (value >> 8) & 0xff
-	#low = value & 0xff
-	high,low = divmod(value,256)
-	return CMD_BEGIN + chr(15) + chr(col) + chr(high) + chr(low) + CMD_END
+	low,high = divmod(value,256)
+	return CMD_BEGIN + chr(15) + chr(col) + chr(low) + chr(high) + CMD_END
 
 def draw_bitmap(file,x,y):
 	return CMD_BEGIN + chr(13) + chr(x) + chr(y) + file + CMD_END
