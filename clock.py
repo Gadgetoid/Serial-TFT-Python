@@ -28,8 +28,6 @@ CLOCK_HOUR_HAND		= SerialTFT.Color.blue
 CLOCK_MINUTE_HAND 	= SerialTFT.Color.blue
 CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 
-#serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
-
 tft = SerialTFT("/dev/ttyAMA0", 9600)
 
 # Change this to set the theme if you're using firmware that supports it
@@ -44,25 +42,15 @@ tft.clear_screen()
 tft.fg_color(CLOCK_OUTLINE)
 tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS)
 
-# Give it time to complete drawing
-time.sleep(0.1)
-
 # Fill clock with background
 tft.fg_color(CLOCK_BACKGROUND)
 tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-2)
-
-# Give it time to complete drawing
-time.sleep(0.1)
 
 # Draw the hub at the clock center
 tft.fg_color(CLOCK_CENTER)
 tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,3)
 
-# Give it time to complete drawing
-time.sleep(0.1)
-
 # Draw the numbers 12, 6, 3 and 9 around the clock in green
-
 tft.font_size(SerialTFT.Font.small)
 tft.fg_color(CLOCK_NUMBERS)
 

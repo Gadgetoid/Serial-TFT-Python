@@ -3,6 +3,7 @@
 # Version: 1.0
 
 import math
+import time
 import serial
 import serialtft_themes
 from serialtft_constants import *
@@ -56,6 +57,9 @@ class SerialTFT:
 
 	def clear_screen(self):
 		self.port.write(CLEAR_SCREEN)
+		# Drawing too quickly after clearning the screen
+		# seems to lead to dropped commands
+		time.sleep(0.2)
 
 	def set_theme(self,theme):
 		'''
@@ -137,11 +141,20 @@ class SerialTFT:
 		'''
 		self.port.write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
+	def draw_rect(self,x1,y1,width,height):
+		self.draw_box(x1,y1,x1+width,y1+height)
+
 	def draw_filled_box(self,x1,y1,x2,y2):
 		'''
 			Draw a rectangle filled with foreground color
 		'''
 		self.port.write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+
+	def draw_filled_rect(self,x1,y1,width,height):
+		'''
+			Draw a filled rectangle at x,y of size width,height
+		'''
+		self.draw_filled_box(x1,y1,x1+width,y1+height)
 
 	def draw_circle(self,x,y,radius):
 		'''
@@ -149,11 +162,24 @@ class SerialTFT:
 		'''
 		self.port.write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
+		if( radius > 30 ):
+			time.sleep(0.1)
+
 	def draw_filled_circle(self,x,y,radius):
 		'''
 			Draw a circle filled with foreground color
 		'''
 		self.port.write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
+
+		# Give circle time to complete drawing
+		# These values have been obtained from
+		# basic brute-force circle drawing tests
+		if( radius > 30 ):
+			time.sleep(0.1)
+		elif( radius > 15 ):
+			time.sleep(0.05)
+		else:
+			time.sleep(0.02)
 
 	def analog_hand(self,origin_x,origin_y,radius,minutes):
 		'''
@@ -170,20 +196,20 @@ class SerialTFT:
 		
 		self.draw_line(int(round(x_a)),int(round(y_a)),int(round(x)),int(round(y)))
 
-	def hex_to_rgb(value):
+	def hex_to_rgb(self,value):
 		value = value.lstrip('#')
 		lv = len(value)
 		return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
 
-	def set_color_hex(col,hex):
-		colour = hex_to_rgb(hex)
+	def set_color_hex(self,col,hex):
+		colour = self.hex_to_rgb(hex)
 		self.set_color_rgb(col,colour[0],colour[1],colour[2])
 
-	def set_color_packed(col,colour):
+	def set_color_packed(self,col,colour):
 		low,high = divmod(colour,256)
 		self.port.write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)
 
-	def set_color_rgb(col,r,g,b):
+	def set_color_rgb(self,col,r,g,b):
 		value = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 		low,high = divmod(value,256)
 		self.port.write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)
