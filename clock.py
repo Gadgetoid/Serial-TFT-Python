@@ -1,4 +1,7 @@
 # Hobbytronics TFT - analogue clock example code (clock.py)
+#
+# This example demonstrates the serialtft library included
+#
 # Modified from original clock example by Philip Howard
 # Displays an analogue clock face with hour/min/sec hands
 # and the current Day and time at the bottom of the screen.
@@ -9,75 +12,79 @@
 # for full command details
 #
 
-import serial
 import time
-import socket
-import math
 from time import localtime, strftime
-from serialtft import *
+from serialtft import SerialTFT
 
-CLOCK_ORIGIN_X = SCREEN_WIDTH_HALF
-CLOCK_ORIGIN_Y = SCREEN_HEIGHT_HALF-1
-CLOCK_RADIUS	  = SCREEN_HEIGHT_HALF-20
-CLOCK_BACKGROUND = COL_BLACK
-CLOCK_OUTLINE	= COL_MAGENTA
-CLOCK_CENTER		= COL_BLUE
-CLOCK_NUMBERS	= COL_GREEN
-CLOCK_DIGITAL	= COL_CYAN
-CLOCK_HOUR_HAND	= COL_BLUE
-CLOCK_MINUTE_HAND= COL_BLUE
-CLOCK_SECOND_HAND= COL_RED
+CLOCK_ORIGIN_X 		= SerialTFT.Screen.width_half
+CLOCK_ORIGIN_Y 		= SerialTFT.Screen.height_half-1
+CLOCK_RADIUS		= SerialTFT.Screen.height_half-20
+CLOCK_BACKGROUND 	= SerialTFT.Color.black
+CLOCK_OUTLINE		= SerialTFT.Color.magenta
+CLOCK_CENTER		= SerialTFT.Color.blue
+CLOCK_NUMBERS		= SerialTFT.Color.green
+CLOCK_DIGITAL		= SerialTFT.Color.cyan
+CLOCK_HOUR_HAND		= SerialTFT.Color.blue
+CLOCK_MINUTE_HAND 	= SerialTFT.Color.blue
+CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 
-serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
+#serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
+
+tft = SerialTFT("/dev/ttyAMA0", 9600)
 
 # Change this to set the theme if you're using firmware that supports it
-# serialport.write(COL_THEME_RED)
+tft.set_theme(SerialTFT.Theme.default)
 
 # Clear Screen
-serialport.write(SCREEN_LANDSCAPE)
-serialport.write(bg_color(CLOCK_BACKGROUND))
-serialport.write(CLEAR_SCREEN)
+tft.screen_rotation(SerialTFT.Rotation.landscape)
+tft.bg_color(CLOCK_BACKGROUND)
+tft.clear_screen()
 
 # Draw clock outline
-serialport.write(fg_color(CLOCK_OUTLINE))
-serialport.write(draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS))
+tft.fg_color(CLOCK_OUTLINE)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS)
+
+# Give it time to complete drawing
 time.sleep(0.1)
 
 # Fill clock with background
-serialport.write(fg_color(CLOCK_BACKGROUND))
-serialport.write(draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-2))
+tft.fg_color(CLOCK_BACKGROUND)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-2)
+
+# Give it time to complete drawing
 time.sleep(0.1)
 
 # Draw the hub at the clock center
-serialport.write(fg_color(CLOCK_CENTER))
-serialport.write(draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,3))
+tft.fg_color(CLOCK_CENTER)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,3)
+
+# Give it time to complete drawing
 time.sleep(0.1)
 
 # Draw the numbers 12, 6, 3 and 9 around the clock in green
 
-serialport.write(FONT_SIZE_SMALL)
+tft.font_size(SerialTFT.Font.small)
+tft.fg_color(CLOCK_NUMBERS)
 
-serialport.write(fg_color(CLOCK_NUMBERS))
+tft.goto_pixel(SerialTFT.Screen.width_half-5,5)
+tft.write('12')
 
-serialport.write(goto_pixel(SCREEN_WIDTH_HALF-5,5))
-serialport.write('12')
+tft.goto_pixel(SerialTFT.Screen.width_half-3,SerialTFT.Screen.height-13)
+tft.write('6')
 
-serialport.write(goto_pixel(SCREEN_WIDTH_HALF-3,SCREEN_HEIGHT - 13))
-serialport.write('6')
+tft.goto_pixel(SerialTFT.Screen.width_half+50,SerialTFT.Screen.height_half-3)
+tft.write('3')
 
-serialport.write(goto_pixel(SCREEN_WIDTH_HALF+50,SCREEN_HEIGHT_HALF-3))
-serialport.write('3')
+tft.goto_pixel(SerialTFT.Screen.width_half-54,SerialTFT.Screen.height_half-3)
+tft.write('9')
 
-serialport.write(goto_pixel(SCREEN_WIDTH_HALF-54,SCREEN_HEIGHT_HALF-3))
-serialport.write('9')
-
-lasthour = -1
-lastmin = -1
-lastsec = -1
+lasthour	= -1
+lastmin		= -1
+lastsec		= -1
 
 while 1:
-	currentmin = time.localtime().tm_min
-	currentsec = time.localtime().tm_sec
+	currentmin	= time.localtime().tm_min
+	currentsec	= time.localtime().tm_sec
 	currenthour = time.localtime().tm_hour
 
 	if(currenthour > 12):
@@ -87,37 +94,35 @@ while 1:
 
 	# Erase any old hands
 
-	serialport.write(fg_color(CLOCK_BACKGROUND))
+	tft.fg_color(CLOCK_BACKGROUND)
+	#serialport.write(fg_color(CLOCK_BACKGROUND))
 
 	if( lasthour != currenthour ):
-		serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-25,lasthour))
+		tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-25,lasthour)
 
 	if( lastmin != currentmin ):
-		serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-10,lastmin))
+		tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-10,lastmin)
 
 	if( lastsec != currentsec ):
-		serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-15,lastsec))
+		tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-15,lastsec)
 
 	# Draw the time/day at the bottom of the screen
-
-	serialport.write(fg_color(CLOCK_DIGITAL))
-	serialport.write(goto_char(1,14))
-	serialport.write(strftime("%H:%M:%S", localtime())+chr(13))
-	serialport.write(goto_char(26 - len(strftime("%a", localtime())),14))
-	serialport.write(strftime("%a", localtime())+chr(13))
+	tft.fg_color(CLOCK_DIGITAL)
+	tft.goto_char(1,14)
+	tft.write_line(strftime("%H:%M:%S", localtime()))
+	tft.goto_char(26 - len(strftime("%a", localtime())),14)
+	tft.write_line(strftime("%a", localtime()))
 
 	# Redraw hands
 
-	serialport.write(fg_color(CLOCK_HOUR_HAND))
+	tft.fg_color(CLOCK_HOUR_HAND)
+	tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-25,currenthour)
 
-	serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-25,currenthour))
-
-	serialport.write(fg_color(CLOCK_MINUTE_HAND))
-
-	serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-10,currentmin))
+	tft.fg_color(CLOCK_MINUTE_HAND)
+	tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-10,currentmin)
 		
-	serialport.write(fg_color(CLOCK_SECOND_HAND))
-	serialport.write(analogue_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-15,currentsec))
+	tft.fg_color(CLOCK_SECOND_HAND)
+	tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-15,currentsec)
 	
 	lasthour = currenthour
 	lastmin = currentmin
