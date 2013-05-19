@@ -262,7 +262,7 @@ class SerialTFT:
 		if( radius > 30 ):
 			time.sleep(0.1)
 
-	def draw_filled_circle(self,x,y,radius):
+	def draw_filled_circle(self,x,y,radius,color=-1):
 		'''
 			Draw a circle filled with foreground color
 		'''
