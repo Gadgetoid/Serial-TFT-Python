@@ -1,7 +1,10 @@
 # Hobbytronics TFT - driver library
 # Author: Philip Howard <phil@gadgetoid.com>
-# Version: 1.0
+# Version: 1.1
+# 1.1:	Updated with Python 3 support
+#		Added explicit int() casts
 
+import sys
 import math
 import time
 import serial
@@ -24,14 +27,14 @@ class SerialTFT:
 		landscape_upsidedown 	= 1
 		landscape 				= 3
 	class Color:
-		black = 0
-		blue = 1
-		red = 2
-		green = 3
-		cyan = 4
+		black 	= 0
+		blue 	= 1
+		red 	= 2
+		green 	= 3
+		cyan 	= 4
 		magenta = 5
-		yellow = 6
-		white = 7
+		yellow 	= 6
+		white 	= 7
 		user_1 = 8
 		user_2 = 9
 		user_3 = 10
@@ -55,8 +58,17 @@ class SerialTFT:
 		'''
 		self.port = serial.Serial(device, baud_rate, timeout=0.5)
 
+	def _write(self,data):
+		'''
+			Wrapper for port.write to handle python3 requirement for byte array
+		'''
+		if(sys.version_info[0] == 2):
+			self.port.write(data)
+		else:
+			self.port.write(bytes(data,'ISO-8859-1'))
+
 	def clear_screen(self):
-		self.port.write(CLEAR_SCREEN)
+		self._write(CLEAR_SCREEN)
 		# Drawing too quickly after clearning the screen
 		# seems to lead to dropped commands
 		time.sleep(0.2)
@@ -67,19 +79,19 @@ class SerialTFT:
 
 			Use one of SerialTFT.Theme.
 		'''
-		self.port.write(theme)
+		self._write(theme)
 
 	def write(self,text):
 		'''
 			Write a text string
 		'''
-		self.port.write(text)
+		self._write(text)
 
 	def write_line(self,text):
 		'''
 			Write a text string followed by a carriage return
 		'''
-		self.port.write(text + chr(13))
+		self._write(text + chr(13))
 
 	def font_size(self,font_size):
 		'''
@@ -89,7 +101,8 @@ class SerialTFT:
 			2 = medium 
 			3 = large
 		'''
-		self.port.write(CMD_BEGIN + CMD_FONT_SIZE + chr(font_size) + CMD_END)
+		font_size = int(font_size)
+		self._write(CMD_BEGIN + CMD_FONT_SIZE + chr(font_size) + CMD_END)
 
 	def screen_rotation(self,int_rotation):
 		'''
@@ -97,70 +110,102 @@ class SerialTFT:
 
 			Use one of SerialTFT.Rotation.
 		'''
-		self.port.write(CMD_BEGIN + CMD_SCREEN_ROTATION + chr(int_rotation) + CMD_END)
+		int_rotation = int(int_rotation)
+		self._write(CMD_BEGIN + CMD_SCREEN_ROTATION + chr(int_rotation) + CMD_END)
 
 	def fg_color(self,color):
 		'''
 			Set the active foreground colour
 		'''
-		self.port.write(CMD_BEGIN + CMD_FG_COLOR + chr(color) + CMD_END)
+		color = int(color)
+		self._write(CMD_BEGIN + CMD_FG_COLOR + chr(color) + CMD_END)
 
 	def bg_color(self,color):
 		'''
 			Set the active background color
 		'''
-		self.port.write(CMD_BEGIN + CMD_BG_COLOR + chr(color) + CMD_END)
+		color = int(color)
+		self._write(CMD_BEGIN + CMD_BG_COLOR + chr(color) + CMD_END)
 
 	def draw_bitmap(self,file,x,y):
 		'''
 			Draw a bitmap from the SD card
 		'''
-		self.port.write(CMD_BEGIN + CMD_DISPLAY_BITMAP + chr(x) + chr(y) + file + CMD_END)
+		x = int(x)
+		y = int(y)
+		self._write(CMD_BEGIN + CMD_DISPLAY_BITMAP + chr(x) + chr(y) + file + CMD_END)
 
 	def goto_pixel(self,pixel_x,pixel_y):
 		'''
 			Go to pixel location
 		'''
-		self.port.write(CMD_BEGIN + CMD_POS_PIXEL + chr(pixel_x) + chr(pixel_y) + CMD_END)
+		pixel_x = int(pixel_x)
+		pixel_y = int(pixel_y)
+		self._write(CMD_BEGIN + CMD_POS_PIXEL + chr(pixel_x) + chr(pixel_y) + CMD_END)
 
 	def goto_char(self,char_x,char_y):
 		'''
 			Go to character position, depends on font size
 		'''
-		self.port.write(CMD_BEGIN + CMD_POS_TEXT + chr(char_x) + chr(char_y) + CMD_END)
+		char_x = int(char_x)
+		char_y = int(char_y)
+		self._write(CMD_BEGIN + CMD_POS_TEXT + chr(char_x) + chr(char_y) + CMD_END)
 
 	def draw_line(self,x1,y1,x2,y2):
 		'''
 			Draw a line in foreground color
 		'''
-		self.port.write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		x1 = int(x1)
+		y1 = int(y1)
+		x2 = int(x2)
+		y2 = int(y2)
+		self._write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
 	def draw_box(self,x1,y1,x2,y2):
 		'''
 			Draw a rectangle outline in foreground color
 		'''
-		self.port.write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		x1 = int(x1)
+		y1 = int(y1)
+		x2 = int(x2)
+		y2 = int(y2)
+		self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
 	def draw_rect(self,x1,y1,width,height):
+		x1 = int(x1)
+		y1 = int(y1)
+		width = int(width)
+		height = int(height)
 		self.draw_box(x1,y1,x1+width,y1+height)
 
 	def draw_filled_box(self,x1,y1,x2,y2):
 		'''
 			Draw a rectangle filled with foreground color
 		'''
-		self.port.write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		x1 = int(x1)
+		y1 = int(y1)
+		x2 = int(x2)
+		y2 = int(y2)
+		self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
 	def draw_filled_rect(self,x1,y1,width,height):
 		'''
 			Draw a filled rectangle at x,y of size width,height
 		'''
+		x1 = int(x1)
+		y1 = int(y1)
+		width = int(width)
+		height = int(height)
 		self.draw_filled_box(x1,y1,x1+width,y1+height)
 
 	def draw_circle(self,x,y,radius):
 		'''
 			Draw a circle outline in foreground color
 		'''
-		self.port.write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
+		x = int(x)
+		y = int(y)
+		radius = int(radius)
+		self._write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
 		if( radius > 30 ):
 			time.sleep(0.1)
@@ -169,7 +214,10 @@ class SerialTFT:
 		'''
 			Draw a circle filled with foreground color
 		'''
-		self.port.write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
+		x = int(x)
+		y = int(y)
+		radius = int(radius)
+		self._write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
 		# Give circle time to complete drawing
 		# These values have been obtained from
@@ -199,7 +247,7 @@ class SerialTFT:
 	def hex_to_rgb(self,value):
 		value = value.lstrip('#')
 		lv = len(value)
-		return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+		return tuple(int(value[i:int(i+lv/3)], 16) for i in range(0, lv, int(lv/3)))
 
 	def set_color_hex(self,col,hex):
 		colour = self.hex_to_rgb(hex)
@@ -207,9 +255,9 @@ class SerialTFT:
 
 	def set_color_packed(self,col,colour):
 		low,high = divmod(colour,256)
-		self.port.write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)
+		self._write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)
 
 	def set_color_rgb(self,col,r,g,b):
 		value = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 		low,high = divmod(value,256)
-		self.port.write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)
+		self._write(CMD_BEGIN + CMD_SET_COLOR + chr(col) + chr(low) + chr(high) + CMD_END)

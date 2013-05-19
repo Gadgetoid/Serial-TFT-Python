@@ -1,4 +1,8 @@
-# Included for posterity
+# This file is full of tests, experiments and tinkering
+# used to verify changes to serialtft.py and prototype
+# new examples. Don't expect it to do anything predictable.
+#
+# It has been included for posterity and is subject to change.
 #
 # The tests below have been used for determining
 # optimum delay times at 9600baud
@@ -21,17 +25,62 @@ tft.screen_rotation(SerialTFT.Rotation.landscape)
 tft.bg_color(SerialTFT.Color.black)
 tft.clear_screen()
 
+PIX_PER_COL = 17
+
+tft.set_theme(SerialTFT.Theme.matrix)
+
 bar_left = BAR_MARGIN
 
 colors = [
-	SerialTFT.Color.red,
 	SerialTFT.Color.blue,
+	SerialTFT.Color.red,
 	SerialTFT.Color.green,
 	SerialTFT.Color.cyan,
 	SerialTFT.Color.magenta,
 	SerialTFT.Color.yellow,
 	SerialTFT.Color.white
 ]
+
+letters = []
+
+left = 0
+for letter in range(0,32):
+	letters.append([letter,randint(0,150),randint(0,110),randint(0,60),randint(0,1),randint(3,6)])
+	left += 10
+
+left = 0
+while 1:
+
+	for letter in letters:
+		letter[2] += randint(3,6)
+		letter[3] += randint(3,6)
+		if( letter[2] > 120 ):
+			letter[2] = 0
+			letter[1] = randint(0,150)
+			letter[3] = randint(0,60)
+			letter[4] = randint(0,1)
+			letter[5] = randint(3,6)
+
+		left = letter[1]
+		top = letter[2]
+
+		col_idx = int(round(letter[3] / PIX_PER_COL,0))
+		if( col_idx > 6 ):
+			col_idx = 6
+		col = colors[ col_idx ]
+
+		if(letter[4]==1):
+			col = 0
+
+		tft.fg_color(col)
+
+		tft.draw_circle(left,top,letter[5])
+		#tft.goto_pixel(left,top)
+
+		#tft.write(letter[0])
+
+
+	time.sleep(0.1)
 
 '''
 while 1:
@@ -74,9 +123,10 @@ while (bar_left + BAR_MARGIN < SerialTFT.Screen.width):
 		color_idx = 0
 '''
 
+'''
 square_left = 0
 square_top = 0
-square_width = 4
+square_width = 2
 square_height = 8
 square_margin = 1
 
@@ -102,3 +152,4 @@ while (square_top + square_margin < SerialTFT.Screen.height):
 
 	square_top += square_height + square_margin
 	square_left = square_margin
+'''

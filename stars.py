@@ -29,14 +29,14 @@ tft.fg_color(SerialTFT.Color.white)
 tft.clear_screen()
 
 # Comment out the colour setup if you don't have firmware support
-tft.set_color_hex(0,"#000000")
-tft.set_color_hex(1,"#333333")
-tft.set_color_hex(2,"#555555")
-tft.set_color_hex(3,"#777777")
-tft.set_color_hex(4,"#999999")
-tft.set_color_hex(5,"#BBBBBB")
-tft.set_color_hex(6,"#DDDDDD")
-tft.set_color_hex(7,"#FFFFFF")
+tft.set_color_hex(8,"#000000")
+tft.set_color_hex(9,"#333333")
+tft.set_color_hex(10,"#555555")
+tft.set_color_hex(11,"#777777")
+tft.set_color_hex(12,"#999999")
+tft.set_color_hex(13,"#BBBBBB")
+tft.set_color_hex(14,"#DDDDDD")
+tft.set_color_hex(15,"#FFFFFF")
 
 #tft.set_theme(SerialTFT.Theme.default)
 
@@ -78,14 +78,15 @@ class Simulation:
 
 
             # The Z component is decreased on each frame.
-            star[2] -= 0.19
+            # Decease this number for a smoother, slower starfield
+            star[2] -= 0.40
  
             # If the star has past the screen (I mean Z<=0) then we
             # reposition it far away from the screen (Z=max_depth)
             # with random X and Y coordinates.
             if star[2] <= 0:
-                star[0] = randrange(-25,25)
-                star[1] = randrange(-25,25)
+                star[0] = randrange(-15,15)
+                star[1] = randrange(-15,15)
                 star[2] = self.max_depth
  
             # Convert the 3D coordinates to 2D using perspective projection.
@@ -99,10 +100,10 @@ class Simulation:
             # darker than closer stars. This is done using Linear Interpolation.
             if 0 <= x < SerialTFT.Screen.width and 0 <= y < SerialTFT.Screen.height:
                 size = int((1 - float(star[2]) / self.max_depth) * 2) + 1
-                shade = int((1 - float(star[2]) / self.max_depth) * 7) + 3
+                shade = 7 + int((1 - float(star[2]) / self.max_depth) * 7) + 3
 
-                if(shade > 7):
-                    shade = 7
+                if(shade > 15):
+                    shade = 15
 
                 tft.fg_color(shade)
                 tft.draw_rect(x,y,size,size)

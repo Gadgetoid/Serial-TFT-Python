@@ -3,8 +3,10 @@ Serial-TFT-Python
 
 Python library for the HobbyTronics Serial-TFT board: http://www.hobbytronics.co.uk/tft-serial-display-18
 
-
 Requires python-pyserial.
+
+Version 1.1:
+Updated to work in Python3.x in addition to Python2.x
 
 clock.py
 ========
