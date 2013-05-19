@@ -1,3 +1,7 @@
+# Hobbytronics TFT - driver library constants
+# Author: Philip Howard <phil@gadgetoid.com>
+# Version: 1.0
+
 CMD_BEGIN			= chr(27)
 CMD_END				= chr(255)
 RETURN				= chr(13)
@@ -18,6 +22,7 @@ CMD_DRAW_FILLED_CIRCLE	= chr(12)
 CMD_DISPLAY_BITMAP	= chr(13)
 CMD_BRIGHTNESS		= chr(14)
 CMD_SET_COLOR		= chr(15)
+CMD_DRAW_PIXL		= chr(16)
 
 LINE_BEGINNING		= CMD_BEGIN + CMD_LINE_START + CMD_END
 TEXT_BEGINNING 		= CMD_BEGIN + CMD_POS_TEXT + chr(0) + chr(0) + CMD_END

@@ -23,7 +23,7 @@ from serialtft import SerialTFT
 # https://github.com/Gadgetoid/serial_tft_18/
 # You'll get a faster, monochrome starfield
 
-MY_FIRMWARE_IS_MODIFIED = False
+MY_FIRMWARE_IS_MODIFIED = True
 
 # Play with these values to change the star field
 # higher values look better, but will run much, much slower
@@ -54,7 +54,7 @@ class Simulation:
             self.tft.set_color_hex(15,"#FFFFFF")
             self.start_col = 8
             self.max_col = 15
-            self.max_size = 3
+            self.max_size = 2
         # -- END COLOR SETUP ---
 
         # Clear Screen
@@ -93,7 +93,8 @@ class Simulation:
             if 0 <= x < self.tft.Screen.width and 0 <= y < self.tft.Screen.height:
                 size = int((1 - float(star[2]) / self.max_depth) * self.max_size) + 1
                 if(MY_FIRMWARE_IS_MODIFIED):
-                    self.tft.draw_filled_rect(x,y,size,size,0)
+                    self.tft.draw_pixel(x,y,0)
+                    #self.tft.draw_box(x,y,size,size,0)
                 else:
                     self.tft.fg_color(0)
                     self.tft.draw_rect(x,y,size,size)
@@ -129,7 +130,8 @@ class Simulation:
                     shade = self.start_col
 
                 if(MY_FIRMWARE_IS_MODIFIED):
-                    self.tft.draw_filled_rect(x,y,size,size,shade)
+                    self.tft.draw_pixel(x,y,shade)
+                    #self.tft.draw_box(x,y,size,size,shade)
                 else:
                     self.tft.fg_color(shade)
                     self.tft.draw_rect(x,y,size,size)

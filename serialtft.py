@@ -81,6 +81,8 @@ class SerialTFT:
 		self.flush = flush
 		self.port = serial.Serial(device, baud_rate, timeout=0.5)
 
+		self.python_major_version = sys.version_info[0]
+
 	def __enter__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True,flush=True):
 		self.__init__(device,baud_rate,clear_on_exit,flush)
 		return self
@@ -100,7 +102,7 @@ class SerialTFT:
 		'''
 			Wrapper for port.write to handle python3 requirement for byte array
 		'''
-		if(sys.version_info[0] == 2):
+		if(self.python_major_version == 2):
 			self.port.write(data)
 		else:
 			self.port.write(bytes(data,'ISO-8859-1'))
@@ -191,6 +193,15 @@ class SerialTFT:
 		char_y = int(char_y)
 		self._write(CMD_BEGIN + CMD_POS_TEXT + chr(char_x) + chr(char_y) + CMD_END)
 
+	def draw_pixel(self,x,y,color=-1):
+		x = int(x)
+		y = int(y)
+		if( color > -1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_PIXL + chr(x) + chr(y) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_PIXL + chr(x) + chr(y) + CMD_END)
+
+
 	def draw_line(self,x1,y1,x2,y2,color=-1):
 		'''
 			Draw a line in foreground color
@@ -204,6 +215,25 @@ class SerialTFT:
 		else:
 			self._write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
+		# Come on, 116 lines per second
+		# how much more do you want from
+		# a tiny ATMega!
+		if(self.flush == False):
+			time.sleep(0.007)
+
+	def draw_box_fast(self,x1,y1,x2,y2,color=-1):
+		# x1,y1    x2,y1
+		#
+		# x1,y2    x2,y2
+		x1 = int(x1)
+		y1 = int(y1)
+		x2 = int(x2)
+		y2 = int(y2)
+		self.draw_line(x1,y1,x2,y1,color)
+		self.draw_line(x2,y1,x2,y2,color)
+		self.draw_line(x2,y2,x1,y2,color)
+		self.draw_line(x1,y2,x1,y1,color)
+
 	def draw_box(self,x1,y1,x2,y2,color=-1):
 		'''
 			Draw a rectangle outline in foreground color
@@ -212,17 +242,21 @@ class SerialTFT:
 		y1 = int(y1)
 		x2 = int(x2)
 		y2 = int(y2)
+
 		if( color>-1 ):
 			self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + chr(color) + CMD_END)
 		else:
 			self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
-	def draw_rect(self,x1,y1,width,height,color=-1):
-		x1 = int(x1)
-		y1 = int(y1)
-		width = int(width)
-		height = int(height)
-		self.draw_box(x1,y1,x1+width,y1+height,color)
+		if(self.flush == False):
+			time.sleep(0.007)
+
+	#def draw_rect(self,x1,y1,width,height,color=-1):
+	#	x1 = int(x1)
+	#	y1 = int(y1)
+	#	width = int(width)
+	#	height = int(height)
+	#	self.draw_box(x1,y1,x1+width,y1+height,color)
 
 	def draw_filled_box(self,x1,y1,x2,y2,color=-1):
 		'''
@@ -232,20 +266,24 @@ class SerialTFT:
 		y1 = int(y1)
 		x2 = int(x2)
 		y2 = int(y2)
+		
 		if( color>-1 ):
 			self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + chr(color) + CMD_END)
 		else:
 			self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
-	def draw_filled_rect(self,x1,y1,width,height,color=-1):
-		'''
-			Draw a filled rectangle at x,y of size width,height
-		'''
-		x1 = int(x1)
-		y1 = int(y1)
-		width = int(width)
-		height = int(height)
-		self.draw_filled_box(x1,y1,x1+width,y1+height,color)
+		if(self.flush == False):
+			time.sleep(0.06)
+
+	#def draw_filled_rect(self,x1,y1,width,height,color=-1):
+	#	'''
+	#		Draw a filled rectangle at x,y of size width,height
+	#	'''
+	#	x1 = int(x1)
+	#	y1 = int(y1)
+	#	width = int(width)
+	#	height = int(height)
+	#	self.draw_filled_box(x1,y1,x1+width,y1+height,color)
 
 	def draw_circle(self,x,y,radius,color=-1):
 		'''
@@ -259,8 +297,19 @@ class SerialTFT:
 		else:
 			self._write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
-		if( radius > 30 ):
-			time.sleep(0.1)
+
+		# Give circle time to complete drawing
+		# These values have been obtained from
+		# basic brute-force circle drawing tests
+		# If you need to draw circles faster,
+		# you're doing something wrong!
+		if(self.flush == False):
+			if(self.python_major_version == 2):
+				# I have no idea what's going on in python2 here...
+				time.sleep(0.02)
+			else:
+				time.sleep(0.0001 + (math.log(radius)/220))
+
 
 	def draw_filled_circle(self,x,y,radius,color=-1):
 		'''
@@ -277,12 +326,14 @@ class SerialTFT:
 		# Give circle time to complete drawing
 		# These values have been obtained from
 		# basic brute-force circle drawing tests
-		if( radius > 30 ):
-			time.sleep(0.1)
-		elif( radius > 15 ):
-			time.sleep(0.05)
-		else:
-			time.sleep(0.02)
+		# If you need to draw circles faster,
+		# you're doing something wrong!
+		if(self.flush == False):
+			if(self.python_major_version == 2):
+				# I have no idea what's going on in python2 here...
+				time.sleep(0.03)
+			else:
+				time.sleep(0.0001 + (math.log(radius)/120))
 
 	def analog_hand(self,origin_x,origin_y,radius,minutes,color=-1):
 		'''

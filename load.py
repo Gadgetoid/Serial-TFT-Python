@@ -15,7 +15,9 @@ from time import localtime, strftime
 from random import randint
 from serialtft import SerialTFT
 
-tft = SerialTFT("/dev/ttyAMA0", 9600)
+from functools import reduce
+
+tft = SerialTFT("/dev/ttyAMA0", 9600, True, False)
 
 BAR_WIDTH = 4
 BAR_MARGIN = 1
@@ -24,12 +26,6 @@ BAR_MARGIN = 1
 tft.screen_rotation(SerialTFT.Rotation.landscape)
 tft.bg_color(SerialTFT.Color.black)
 tft.clear_screen()
-
-PIX_PER_COL = 17
-
-tft.set_theme(SerialTFT.Theme.matrix)
-
-bar_left = BAR_MARGIN
 
 colors = [
 	SerialTFT.Color.user_blue,
@@ -40,6 +36,210 @@ colors = [
 	SerialTFT.Color.user_yellow,
 	SerialTFT.Color.user_white
 ]
+
+
+print('Testing pixel draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,2000):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_pixel(randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+'''
+print('Testing fast box draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_box_fast(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+'''
+
+print('Testing box draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_box(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+
+print('Testing filled box draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_filled_box(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+
+print('Testing line draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_line(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+
+print('Testing circle draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+
+print('Testing filled circle draw rate')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,200):
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_filled_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40),color)
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+
+
+tft.flush = True
+
+print('Testing circle draw rate, flush enabled')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,100):
+	for color in colors:
+		tft.fg_color(color)
+		tft.draw_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40))
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+print('Testing filled circle draw rate, flush enabled')
+result = []
+circle_count = 0
+last_sec = time.localtime().tm_sec
+for x in range(0,100):
+	for color in colors:
+		tft.fg_color(color)
+		tft.draw_filled_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40))
+		circle_count += 1
+		if time.localtime().tm_sec !=last_sec:
+			last_sec = time.localtime().tm_sec
+			print('Drawn ' + str(circle_count))
+			result.append(circle_count)
+			circle_count = 0
+
+# First result is unreliable
+result.pop(0)
+print('Average rate: ' + str(reduce(lambda x, y: x + y, result) / len(result)))
+
+print('--------------------------------------')
+exit(0)
+
+
+while 1:
+	for color in colors:
+		#tft.fg_color(color)
+		tft.draw_filled_circle(SerialTFT.Screen.width_half,SerialTFT.Screen.height_half,50-randint(0,49),color)
+
+
+
+PIX_PER_COL = 17
+
+tft.set_theme(SerialTFT.Theme.matrix)
+
+bar_left = BAR_MARGIN
 
 letters = []
 
