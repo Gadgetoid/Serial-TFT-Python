@@ -28,7 +28,10 @@ CLOCK_HOUR_HAND		= SerialTFT.Color.blue
 CLOCK_MINUTE_HAND 	= SerialTFT.Color.blue
 CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 
-tft = SerialTFT("/dev/ttyAMA0", 9600)
+# Setup the SerialTFT library, we want to clean up the LCD on exit
+# so specify true as the last parameter
+# SerialTFT( device, baud_rate, clear_on_exit )
+tft = SerialTFT("/dev/ttyAMA0", 9600, True)
 
 # Change this to set the theme if you're using firmware that supports it
 tft.set_theme(SerialTFT.Theme.default)

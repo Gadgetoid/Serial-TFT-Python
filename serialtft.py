@@ -3,8 +3,12 @@
 # Version: 1.1
 # 1.1:	Updated with Python 3 support
 #		Added explicit int() casts
+# 1.2:	Added deconstrutor and enter/exit 
+#		handlers for 'with' based usage
+#		New third param to clean LCD on exit
 
 import sys
+import signal
 import math
 import time
 import serial
@@ -52,11 +56,26 @@ class SerialTFT:
 		flat_ui 	= serialtft_themes.COL_THEME_FLAT_UI
 		solarized 	= serialtft_themes.COL_THEME_SOLARIZED
 
-	def __init__(self,device='/dev/ttyAMA0',baud_rate=9600):
+	def __init__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True):
 		'''
 			Set up SerialTFT with device and baud_rate
 		'''
+		self.clear_on_exit = clear_on_exit
 		self.port = serial.Serial(device, baud_rate, timeout=0.5)
+
+	def __enter__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True):
+		self.__init__(device,baud_rate,clear_on_exit)
+		return self
+
+	def __del__(self):
+		if (type(self.port) == serial.Serial):
+			if (self.clear_on_exit):
+				self.clear_screen()
+			self.port.flush()
+			self.port.close()
+
+	def __exit__(self,type,value,traceback):
+		self.__del__()
 
 	def _write(self,data):
 		'''
