@@ -1,11 +1,18 @@
 # Hobbytronics TFT - driver library
 # Author: Philip Howard <phil@gadgetoid.com>
-# Version: 1.1
-# 1.1:	Updated with Python 3 support
-#		Added explicit int() casts
-# 1.2:	Added deconstrutor and enter/exit 
+# Version: 1.3
+# 1.1:	- Updated with Python 3 support
+#		- Added explicit int() casts
+# 1.2:	- Added deconstrutor and enter/exit 
 #		handlers for 'with' based usage
-#		New third param to clean LCD on exit
+#		- New third param to clean LCD on exit
+# 1.3:	- Added optional call to serial.flush()
+#		This prevents driving serial-tft to
+#		crashing point. Can be disabled by
+#		setting last parameter to False
+#		- Added optional color param to drawing
+#		commands, modified firmware only!
+#		This overrides the set fg color
 
 import sys
 import math
@@ -66,20 +73,22 @@ class SerialTFT:
 		flat_ui 	= serialtft_themes.COL_THEME_FLAT_UI
 		solarized 	= serialtft_themes.COL_THEME_SOLARIZED
 
-	def __init__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True):
+	def __init__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True,flush=True):
 		'''
 			Set up SerialTFT with device and baud_rate
 		'''
 		self.clear_on_exit = clear_on_exit
+		self.flush = flush
 		self.port = serial.Serial(device, baud_rate, timeout=0.5)
 
-	def __enter__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True):
-		self.__init__(device,baud_rate,clear_on_exit)
+	def __enter__(self,device='/dev/ttyAMA0',baud_rate=9600,clear_on_exit=True,flush=True):
+		self.__init__(device,baud_rate,clear_on_exit,flush)
 		return self
 
 	def __del__(self):
 		if (type(self.port) == serial.Serial):
 			if (self.clear_on_exit):
+				self.port.flush()
 				self.clear_screen()
 			self.port.flush()
 			self.port.close()
@@ -95,6 +104,8 @@ class SerialTFT:
 			self.port.write(data)
 		else:
 			self.port.write(bytes(data,'ISO-8859-1'))
+		if(self.flush):
+			self.port.flush()
 
 	def clear_screen(self):
 		self._write(CLEAR_SCREEN)
@@ -180,7 +191,7 @@ class SerialTFT:
 		char_y = int(char_y)
 		self._write(CMD_BEGIN + CMD_POS_TEXT + chr(char_x) + chr(char_y) + CMD_END)
 
-	def draw_line(self,x1,y1,x2,y2):
+	def draw_line(self,x1,y1,x2,y2,color=-1):
 		'''
 			Draw a line in foreground color
 		'''
@@ -188,9 +199,12 @@ class SerialTFT:
 		y1 = int(y1)
 		x2 = int(x2)
 		y2 = int(y2)
-		self._write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		if( color > -1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_LINE + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
-	def draw_box(self,x1,y1,x2,y2):
+	def draw_box(self,x1,y1,x2,y2,color=-1):
 		'''
 			Draw a rectangle outline in foreground color
 		'''
@@ -198,16 +212,19 @@ class SerialTFT:
 		y1 = int(y1)
 		x2 = int(x2)
 		y2 = int(y2)
-		self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		if( color>-1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
-	def draw_rect(self,x1,y1,width,height):
+	def draw_rect(self,x1,y1,width,height,color=-1):
 		x1 = int(x1)
 		y1 = int(y1)
 		width = int(width)
 		height = int(height)
-		self.draw_box(x1,y1,x1+width,y1+height)
+		self.draw_box(x1,y1,x1+width,y1+height,color)
 
-	def draw_filled_box(self,x1,y1,x2,y2):
+	def draw_filled_box(self,x1,y1,x2,y2,color=-1):
 		'''
 			Draw a rectangle filled with foreground color
 		'''
@@ -215,9 +232,12 @@ class SerialTFT:
 		y1 = int(y1)
 		x2 = int(x2)
 		y2 = int(y2)
-		self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
+		if( color>-1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_FILLED_BOX + chr(x1) + chr(y1) + chr(x2) + chr(y2) + CMD_END)
 
-	def draw_filled_rect(self,x1,y1,width,height):
+	def draw_filled_rect(self,x1,y1,width,height,color=-1):
 		'''
 			Draw a filled rectangle at x,y of size width,height
 		'''
@@ -225,16 +245,19 @@ class SerialTFT:
 		y1 = int(y1)
 		width = int(width)
 		height = int(height)
-		self.draw_filled_box(x1,y1,x1+width,y1+height)
+		self.draw_filled_box(x1,y1,x1+width,y1+height,color)
 
-	def draw_circle(self,x,y,radius):
+	def draw_circle(self,x,y,radius,color=-1):
 		'''
 			Draw a circle outline in foreground color
 		'''
 		x = int(x)
 		y = int(y)
 		radius = int(radius)
-		self._write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
+		if( color>-1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
 		if( radius > 30 ):
 			time.sleep(0.1)
@@ -246,7 +269,10 @@ class SerialTFT:
 		x = int(x)
 		y = int(y)
 		radius = int(radius)
-		self._write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
+		if( color>-1 ):
+			self._write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + chr(color) + CMD_END)
+		else:
+			self._write(CMD_BEGIN + CMD_DRAW_FILLED_CIRCLE + chr(x) + chr(y) + chr(radius) + CMD_END)
 
 		# Give circle time to complete drawing
 		# These values have been obtained from
@@ -258,7 +284,7 @@ class SerialTFT:
 		else:
 			time.sleep(0.02)
 
-	def analog_hand(self,origin_x,origin_y,radius,minutes):
+	def analog_hand(self,origin_x,origin_y,radius,minutes,color=-1):
 		'''
 			Draw a line from origin x,y of length radius at degrees minutes
 
@@ -271,7 +297,7 @@ class SerialTFT:
 		x_a = origin_x + 6*math.sin(angle)
 		y_a = origin_y - 6*math.cos(angle)
 		
-		self.draw_line(int(round(x_a)),int(round(y_a)),int(round(x)),int(round(y)))
+		self.draw_line(int(round(x_a)),int(round(y_a)),int(round(x)),int(round(y)),color)
 
 	def hex_to_rgb(self,value):
 		value = value.lstrip('#')

@@ -29,9 +29,11 @@ CLOCK_MINUTE_HAND 	= SerialTFT.Color.cyan
 CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 
 # Setup the SerialTFT library, we want to clean up the LCD on exit
-# so specify true as the last parameter
-# SerialTFT( device, baud_rate, clear_on_exit )
-tft = SerialTFT("/dev/ttyAMA0", 9600, True)
+# so specify true for clear_on_exit
+# We're driving the SerialTFT within sane limits,
+# so we can turn off flush safely.
+# SerialTFT( device, baud_rate, clear_on_exit, flush )
+tft = SerialTFT("/dev/ttyAMA0", 9600, True, False)
 
 
 # Uncomment the colour setup if you have firmware support
@@ -100,7 +102,6 @@ while 1:
 	# Erase any old hands
 
 	tft.fg_color(CLOCK_BACKGROUND)
-	#serialport.write(fg_color(CLOCK_BACKGROUND))
 
 	if( lasthour != currenthour ):
 		tft.analog_hand(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-25,lasthour)

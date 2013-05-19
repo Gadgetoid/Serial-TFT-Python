@@ -19,32 +19,43 @@ import random
 from random import randrange
 from serialtft import SerialTFT
 
-start_col = 0
-max_col = 15
-
-# Uncomment the colour setup if you have firmware support
-# for user-colours. Modified firmware can be found here:
+# Set this to True if you're using modified firmware from:
 # https://github.com/Gadgetoid/serial_tft_18/
+# You'll get a faster, monochrome starfield
 
-# -- COLOR SETUP --
-#tft.set_color_hex(8,"#000000")
-#tft.set_color_hex(9,"#333333")
-#tft.set_color_hex(10,"#555555")
-#tft.set_color_hex(11,"#777777")
-#tft.set_color_hex(12,"#999999")
-#tft.set_color_hex(13,"#BBBBBB")
-#tft.set_color_hex(14,"#DDDDDD")
-#tft.set_color_hex(15,"#FFFFFF")
-#start_col = 8
-#max_col = 15
-# -- END COLOR SETUP ---
+MY_FIRMWARE_IS_MODIFIED = False
 
-#tft.set_theme(SerialTFT.Theme.default)
+# Play with these values to change the star field
+# higher values look better, but will run much, much slower
+
+NUM_STARS = 20
+MAX_DEPTH = 20
 
 class Simulation:
-    def __init__(self, num_stars, max_depth, start_col, max_col):
+    def __init__(self, num_stars, max_depth):
  
-        self.tft = SerialTFT("/dev/ttyAMA0", 9600)
+        self.tft = SerialTFT("/dev/ttyAMA0", 9600, True, False)
+
+        self.start_col = 0
+        self.max_col = 7
+        self.max_size = 2
+
+        # This colour setup is best if you have firmware support
+
+        # -- COLOR SETUP --
+        if(MY_FIRMWARE_IS_MODIFIED):
+            self.tft.set_color_hex(8,"#000000")
+            self.tft.set_color_hex(9,"#333333")
+            self.tft.set_color_hex(10,"#555555")
+            self.tft.set_color_hex(11,"#777777")
+            self.tft.set_color_hex(12,"#999999")
+            self.tft.set_color_hex(13,"#BBBBBB")
+            self.tft.set_color_hex(14,"#DDDDDD")
+            self.tft.set_color_hex(15,"#FFFFFF")
+            self.start_col = 8
+            self.max_col = 15
+            self.max_size = 3
+        # -- END COLOR SETUP ---
 
         # Clear Screen
         self.tft.screen_rotation(SerialTFT.Rotation.landscape)
@@ -54,9 +65,6 @@ class Simulation:
 
         self.num_stars = num_stars
         self.max_depth = max_depth
-
-        self.start_col = start_col
-        self.max_col = max_col
  
         self.init_stars()
  
@@ -83,9 +91,12 @@ class Simulation:
             y = int(star[1] * k + origin_y)
 
             if 0 <= x < self.tft.Screen.width and 0 <= y < self.tft.Screen.height:
-                size = int((1 - float(star[2]) / self.max_depth) * 2) + 1
-                self.tft.fg_color(0)
-                self.tft.draw_rect(x,y,size,size)
+                size = int((1 - float(star[2]) / self.max_depth) * self.max_size) + 1
+                if(MY_FIRMWARE_IS_MODIFIED):
+                    self.tft.draw_filled_rect(x,y,size,size,0)
+                else:
+                    self.tft.fg_color(0)
+                    self.tft.draw_rect(x,y,size,size)
             
 
 
@@ -111,14 +122,17 @@ class Simulation:
             # closer stars. Similarly, we make sure that distant stars are
             # darker than closer stars. This is done using Linear Interpolation.
             if 0 <= x < self.tft.Screen.width and 0 <= y < self.tft.Screen.height:
-                size = int((1 - float(star[2]) / self.max_depth) * 2) + 1
+                size = int((1 - float(star[2]) / self.max_depth) * self.max_size) + 1
                 shade = self.start_col + int((1 - float(star[2]) / self.max_depth) * 7) + 3
 
                 if(shade > self.max_col):
                     shade = self.start_col
 
-                self.tft.fg_color(shade)
-                self.tft.draw_rect(x,y,size,size)
+                if(MY_FIRMWARE_IS_MODIFIED):
+                    self.tft.draw_filled_rect(x,y,size,size,shade)
+                else:
+                    self.tft.fg_color(shade)
+                    self.tft.draw_rect(x,y,size,size)
 
  
     def run(self):
@@ -126,5 +140,5 @@ class Simulation:
             self.move_and_draw_stars()
 
 
-Simulation(64,32,start_col,max_col).run()
+Simulation(NUM_STARS,MAX_DEPTH).run()
 

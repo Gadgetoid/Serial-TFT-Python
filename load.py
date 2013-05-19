@@ -32,13 +32,13 @@ tft.set_theme(SerialTFT.Theme.matrix)
 bar_left = BAR_MARGIN
 
 colors = [
-	SerialTFT.Color.blue,
-	SerialTFT.Color.red,
-	SerialTFT.Color.green,
-	SerialTFT.Color.cyan,
-	SerialTFT.Color.magenta,
-	SerialTFT.Color.yellow,
-	SerialTFT.Color.white
+	SerialTFT.Color.user_blue,
+	SerialTFT.Color.user_red,
+	SerialTFT.Color.user_green,
+	SerialTFT.Color.user_cyan,
+	SerialTFT.Color.user_magenta,
+	SerialTFT.Color.user_yellow,
+	SerialTFT.Color.user_white
 ]
 
 letters = []
@@ -72,9 +72,9 @@ while 1:
 		if(letter[4]==1):
 			col = 0
 
-		tft.fg_color(col)
+		#tft.fg_color(col)
 
-		tft.draw_circle(left,top,letter[5])
+		tft.draw_circle(left,top,letter[5],col)
 		#tft.goto_pixel(left,top)
 
 		#tft.write(letter[0])
