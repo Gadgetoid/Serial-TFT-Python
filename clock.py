@@ -33,8 +33,22 @@ CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 # SerialTFT( device, baud_rate, clear_on_exit )
 tft = SerialTFT("/dev/ttyAMA0", 9600, True)
 
-# Change this to set the theme if you're using firmware that supports it
-tft.set_theme(SerialTFT.Theme.default)
+
+# Uncomment the colour setup if you have firmware support
+# for user-colours. Modified firmware can be found here:
+# https://github.com/Gadgetoid/serial_tft_18/
+
+# -- COLOR SETUP --
+#tft.set_theme(SerialTFT.Theme.matrix)
+#CLOCK_BACKGROUND 	= SerialTFT.Color.user_1
+#CLOCK_OUTLINE		= SerialTFT.Color.user_6
+#CLOCK_CENTER		= SerialTFT.Color.user_2
+#CLOCK_NUMBERS		= SerialTFT.Color.user_4
+#CLOCK_DIGITAL		= SerialTFT.Color.user_5
+#CLOCK_HOUR_HAND		= SerialTFT.Color.user_2
+#CLOCK_MINUTE_HAND 	= SerialTFT.Color.user_2
+#CLOCK_SECOND_HAND 	= SerialTFT.Color.user_3
+# -- END COLOR SETUP --
 
 # Clear Screen
 tft.screen_rotation(SerialTFT.Rotation.landscape)

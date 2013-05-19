@@ -14,37 +14,49 @@
 # for full command details
 #
 
-
 import time
 import random
 from random import randrange
 from serialtft import SerialTFT
 
-tft = SerialTFT("/dev/ttyAMA0", 9600)
+start_col = 0
+max_col = 15
 
-# Clear Screen
-tft.screen_rotation(SerialTFT.Rotation.landscape)
-tft.bg_color(SerialTFT.Color.black)
-tft.fg_color(SerialTFT.Color.white)
-tft.clear_screen()
+# Uncomment the colour setup if you have firmware support
+# for user-colours. Modified firmware can be found here:
+# https://github.com/Gadgetoid/serial_tft_18/
 
-# Comment out the colour setup if you don't have firmware support
-tft.set_color_hex(8,"#000000")
-tft.set_color_hex(9,"#333333")
-tft.set_color_hex(10,"#555555")
-tft.set_color_hex(11,"#777777")
-tft.set_color_hex(12,"#999999")
-tft.set_color_hex(13,"#BBBBBB")
-tft.set_color_hex(14,"#DDDDDD")
-tft.set_color_hex(15,"#FFFFFF")
+# -- COLOR SETUP --
+#tft.set_color_hex(8,"#000000")
+#tft.set_color_hex(9,"#333333")
+#tft.set_color_hex(10,"#555555")
+#tft.set_color_hex(11,"#777777")
+#tft.set_color_hex(12,"#999999")
+#tft.set_color_hex(13,"#BBBBBB")
+#tft.set_color_hex(14,"#DDDDDD")
+#tft.set_color_hex(15,"#FFFFFF")
+#start_col = 8
+#max_col = 15
+# -- END COLOR SETUP ---
 
 #tft.set_theme(SerialTFT.Theme.default)
 
 class Simulation:
-    def __init__(self, num_stars, max_depth):
+    def __init__(self, num_stars, max_depth, start_col, max_col):
  
+        self.tft = SerialTFT("/dev/ttyAMA0", 9600)
+
+        # Clear Screen
+        self.tft.screen_rotation(SerialTFT.Rotation.landscape)
+        self.tft.bg_color(SerialTFT.Color.black)
+        self.tft.fg_color(SerialTFT.Color.white)
+        self.tft.clear_screen()
+
         self.num_stars = num_stars
         self.max_depth = max_depth
+
+        self.start_col = start_col
+        self.max_col = max_col
  
         self.init_stars()
  
@@ -58,8 +70,8 @@ class Simulation:
  
     def move_and_draw_stars(self):
         """ Move and draw the stars """
-        origin_x = SerialTFT.Screen.width / 2
-        origin_y = SerialTFT.Screen.height / 2
+        origin_x = self.tft.Screen.width / 2
+        origin_y = self.tft.Screen.height / 2
  
         for star in self.stars:
 
@@ -70,10 +82,10 @@ class Simulation:
             x = int(star[0] * k + origin_x)
             y = int(star[1] * k + origin_y)
 
-            if 0 <= x < SerialTFT.Screen.width and 0 <= y < SerialTFT.Screen.height:
+            if 0 <= x < self.tft.Screen.width and 0 <= y < self.tft.Screen.height:
                 size = int((1 - float(star[2]) / self.max_depth) * 2) + 1
-                tft.fg_color(0)
-                tft.draw_rect(x,y,size,size)
+                self.tft.fg_color(0)
+                self.tft.draw_rect(x,y,size,size)
             
 
 
@@ -98,15 +110,15 @@ class Simulation:
             # We calculate the size such that distant stars are smaller than
             # closer stars. Similarly, we make sure that distant stars are
             # darker than closer stars. This is done using Linear Interpolation.
-            if 0 <= x < SerialTFT.Screen.width and 0 <= y < SerialTFT.Screen.height:
+            if 0 <= x < self.tft.Screen.width and 0 <= y < self.tft.Screen.height:
                 size = int((1 - float(star[2]) / self.max_depth) * 2) + 1
-                shade = 7 + int((1 - float(star[2]) / self.max_depth) * 7) + 3
+                shade = self.start_col + int((1 - float(star[2]) / self.max_depth) * 7) + 3
 
-                if(shade > 15):
-                    shade = 15
+                if(shade > self.max_col):
+                    shade = self.start_col
 
-                tft.fg_color(shade)
-                tft.draw_rect(x,y,size,size)
+                self.tft.fg_color(shade)
+                self.tft.draw_rect(x,y,size,size)
 
  
     def run(self):
@@ -114,5 +126,5 @@ class Simulation:
             self.move_and_draw_stars()
 
 
-Simulation(64,32).run()
+Simulation(64,32,start_col,max_col).run()
 

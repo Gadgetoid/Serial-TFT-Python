@@ -10,7 +10,7 @@ from serialtft_constants import *
 def hex_to_rgb(value):
 	value = value.lstrip('#')
 	lv = len(value)
-	return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+	return tuple(int(value[i:int(i+lv/3)], 16) for i in range(0, lv, int(lv/3)))
 
 def set_color_hex(col,hex):
 	colour = hex_to_rgb(hex)
@@ -35,78 +35,78 @@ def set_color_rgb(col,r,g,b):
 
 # Solarized
 
-COL_THEME_SOLARIZED = set_color_packed(0,0x1AB)   # black 
-COL_THEME_SOLARIZED += set_color_packed(1,0x245A) # blue
-COL_THEME_SOLARIZED += set_color_packed(2,0xD985) # red
-COL_THEME_SOLARIZED += set_color_packed(3,0x84C0) # green
-COL_THEME_SOLARIZED += set_color_packed(4,0x2D13) # cyan
-COL_THEME_SOLARIZED += set_color_packed(5,0xD1B0) # magenta
-COL_THEME_SOLARIZED += set_color_packed(6,0xB440) # yellow
-COL_THEME_SOLARIZED += set_color_packed(7,0xEF5A) # white
+COL_THEME_SOLARIZED = set_color_packed(8,0x1AB)   # black 
+COL_THEME_SOLARIZED += set_color_packed(9,0x245A) # blue
+COL_THEME_SOLARIZED += set_color_packed(10,0xD985) # red
+COL_THEME_SOLARIZED += set_color_packed(11,0x84C0) # green
+COL_THEME_SOLARIZED += set_color_packed(12,0x2D13) # cyan
+COL_THEME_SOLARIZED += set_color_packed(13,0xD1B0) # magenta
+COL_THEME_SOLARIZED += set_color_packed(14,0xB440) # yellow
+COL_THEME_SOLARIZED += set_color_packed(15,0xEF5A) # white
 
 # Flat UI
 
-COL_THEME_FLAT_UI = set_color_rgb(0,0x34,0x49,0x5E)  # black 
-COL_THEME_FLAT_UI += set_color_rgb(1,0x34,0x98,0xDB) # blue
-COL_THEME_FLAT_UI += set_color_rgb(2,0xE7,0x4C,0x3C) # red
-COL_THEME_FLAT_UI += set_color_rgb(3,0x2E,0xCC,0x71) # green
-COL_THEME_FLAT_UI += set_color_rgb(4,0x1A,0xBC,0x9C) # cyan
-COL_THEME_FLAT_UI += set_color_rgb(5,0x9B,0x59,0xB6) # magenta
-COL_THEME_FLAT_UI += set_color_rgb(6,0xF1,0xC4,0x0F) # yellow
-COL_THEME_FLAT_UI += set_color_rgb(7,0xEC,0xF9,0xF1) # white
+COL_THEME_FLAT_UI = set_color_rgb(8,0x34,0x49,0x5E)  # black 
+COL_THEME_FLAT_UI += set_color_rgb(9,0x34,0x98,0xDB) # blue
+COL_THEME_FLAT_UI += set_color_rgb(10,0xE7,0x4C,0x3C) # red
+COL_THEME_FLAT_UI += set_color_rgb(11,0x2E,0xCC,0x71) # green
+COL_THEME_FLAT_UI += set_color_rgb(12,0x1A,0xBC,0x9C) # cyan
+COL_THEME_FLAT_UI += set_color_rgb(13,0x9B,0x59,0xB6) # magenta
+COL_THEME_FLAT_UI += set_color_rgb(14,0xF1,0xC4,0x0F) # yellow
+COL_THEME_FLAT_UI += set_color_rgb(15,0xEC,0xF9,0xF1) # white
 
 # Dark
 
-COL_THEME_DARK = set_color_hex(0,'#000000') # black 
-COL_THEME_DARK += set_color_hex(1,'#003366') # blue
-COL_THEME_DARK += set_color_hex(2,'#660000') # red
-COL_THEME_DARK += set_color_hex(3,'#006633') # green
-COL_THEME_DARK += set_color_hex(4,'#336666') # cyan
-COL_THEME_DARK += set_color_hex(5,'#660066') # magenta
-COL_THEME_DARK += set_color_hex(6,'#996600') # yellow
-COL_THEME_DARK += set_color_hex(7,'#DDDDDD') # white
+COL_THEME_DARK = set_color_hex(8,'#000000') # black 
+COL_THEME_DARK += set_color_hex(9,'#003366') # blue
+COL_THEME_DARK += set_color_hex(10,'#660000') # red
+COL_THEME_DARK += set_color_hex(11,'#006633') # green
+COL_THEME_DARK += set_color_hex(12,'#336666') # cyan
+COL_THEME_DARK += set_color_hex(13,'#660066') # magenta
+COL_THEME_DARK += set_color_hex(14,'#996600') # yellow
+COL_THEME_DARK += set_color_hex(15,'#DDDDDD') # white
 
 # Light
 
-COL_THEME_LIGHT = set_color_hex(0,'#222222') # black 
-COL_THEME_LIGHT += set_color_hex(1,'#0099FF') # blue
-COL_THEME_LIGHT += set_color_hex(2,'#FF3333') # red
-COL_THEME_LIGHT += set_color_hex(3,'#99FF33') # green
-COL_THEME_LIGHT += set_color_hex(4,'#33FFFF') # cyan
-COL_THEME_LIGHT += set_color_hex(5,'#FF3399') # magenta
-COL_THEME_LIGHT += set_color_hex(6,'#FFFF33') # yellow
-COL_THEME_LIGHT += set_color_hex(7,'#FFFFFF') # white
+COL_THEME_LIGHT = set_color_hex(8,'#222222') # black 
+COL_THEME_LIGHT += set_color_hex(9,'#0099FF') # blue
+COL_THEME_LIGHT += set_color_hex(10,'#FF3333') # red
+COL_THEME_LIGHT += set_color_hex(11,'#99FF33') # green
+COL_THEME_LIGHT += set_color_hex(12,'#33FFFF') # cyan
+COL_THEME_LIGHT += set_color_hex(13,'#FF3399') # magenta
+COL_THEME_LIGHT += set_color_hex(14,'#FFFF33') # yellow
+COL_THEME_LIGHT += set_color_hex(15,'#FFFFFF') # white
 
 # Green
 
-COL_THEME_MATRIX = set_color_hex(0,'#002100') # black 
-COL_THEME_MATRIX += set_color_hex(1,'#005200') # blue
-COL_THEME_MATRIX += set_color_hex(2,'#006300') # red
-COL_THEME_MATRIX += set_color_hex(3,'#007400') # green
-COL_THEME_MATRIX += set_color_hex(4,'#008500') # cyan
-COL_THEME_MATRIX += set_color_hex(5,'#009600') # magenta
-COL_THEME_MATRIX += set_color_hex(6,'#00A700') # yellow
-COL_THEME_MATRIX += set_color_hex(7,'#00FF00') # white
+COL_THEME_MATRIX = set_color_hex(8,'#002100') # black 
+COL_THEME_MATRIX += set_color_hex(9,'#005200') # blue
+COL_THEME_MATRIX += set_color_hex(10,'#006300') # red
+COL_THEME_MATRIX += set_color_hex(11,'#007400') # green
+COL_THEME_MATRIX += set_color_hex(12,'#008500') # cyan
+COL_THEME_MATRIX += set_color_hex(13,'#009600') # magenta
+COL_THEME_MATRIX += set_color_hex(14,'#00A700') # yellow
+COL_THEME_MATRIX += set_color_hex(15,'#00FF00') # white
 
 # Red
 
-COL_THEME_RED = set_color_hex(0,'#210000') # black 
-COL_THEME_RED += set_color_hex(1,'#520000') # blue
-COL_THEME_RED += set_color_hex(2,'#630000') # red
-COL_THEME_RED += set_color_hex(3,'#740000') # green
-COL_THEME_RED += set_color_hex(4,'#850000') # cyan
-COL_THEME_RED += set_color_hex(5,'#960000') # magenta
-COL_THEME_RED += set_color_hex(6,'#A70000') # yellow
-COL_THEME_RED += set_color_hex(7,'#FF0000') # white
+COL_THEME_RED = set_color_hex(8,'#210000') # black 
+COL_THEME_RED += set_color_hex(9,'#520000') # blue
+COL_THEME_RED += set_color_hex(10,'#630000') # red
+COL_THEME_RED += set_color_hex(11,'#740000') # green
+COL_THEME_RED += set_color_hex(12,'#850000') # cyan
+COL_THEME_RED += set_color_hex(13,'#960000') # magenta
+COL_THEME_RED += set_color_hex(14,'#A70000') # yellow
+COL_THEME_RED += set_color_hex(15,'#FF0000') # white
 
 # If you don't want to reset your serial TFT
 # use this theme to return the colours to defaults
 
-COL_THEME_DEFAULT = set_color_packed(0,0x0000) # black 
-COL_THEME_DEFAULT += set_color_packed(1,0x001F) # blue
-COL_THEME_DEFAULT += set_color_packed(2,0xF800) # red
-COL_THEME_DEFAULT += set_color_packed(3,0x07E0) # green
-COL_THEME_DEFAULT += set_color_packed(4,0x07FF) # cyan
-COL_THEME_DEFAULT += set_color_packed(5,0xF81F) # magenta
-COL_THEME_DEFAULT += set_color_packed(6,0xFFE0) # yellow
-COL_THEME_DEFAULT += set_color_packed(7,0xFFFF) # white
+COL_THEME_DEFAULT = set_color_packed(8,0x0000) # black 
+COL_THEME_DEFAULT += set_color_packed(9,0x001F) # blue
+COL_THEME_DEFAULT += set_color_packed(10,0xF800) # red
+COL_THEME_DEFAULT += set_color_packed(11,0x07E0) # green
+COL_THEME_DEFAULT += set_color_packed(12,0x07FF) # cyan
+COL_THEME_DEFAULT += set_color_packed(13,0xF81F) # magenta
+COL_THEME_DEFAULT += set_color_packed(14,0xFFE0) # yellow
+COL_THEME_DEFAULT += set_color_packed(15,0xFFFF) # white

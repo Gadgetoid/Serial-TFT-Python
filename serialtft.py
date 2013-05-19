@@ -8,7 +8,6 @@
 #		New third param to clean LCD on exit
 
 import sys
-import signal
 import math
 import time
 import serial
