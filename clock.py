@@ -23,9 +23,9 @@ CLOCK_BACKGROUND 	= SerialTFT.Color.black
 CLOCK_OUTLINE		= SerialTFT.Color.magenta
 CLOCK_CENTER		= SerialTFT.Color.blue
 CLOCK_NUMBERS		= SerialTFT.Color.green
-CLOCK_DIGITAL		= SerialTFT.Color.cyan
-CLOCK_HOUR_HAND		= SerialTFT.Color.blue
-CLOCK_MINUTE_HAND 	= SerialTFT.Color.blue
+CLOCK_DIGITAL		= SerialTFT.Color.blue
+CLOCK_HOUR_HAND 	= SerialTFT.Color.cyan
+CLOCK_MINUTE_HAND 	= SerialTFT.Color.cyan
 CLOCK_SECOND_HAND 	= SerialTFT.Color.red
 
 # Setup the SerialTFT library, we want to clean up the LCD on exit
@@ -40,14 +40,14 @@ tft = SerialTFT("/dev/ttyAMA0", 9600, True)
 
 # -- COLOR SETUP --
 #tft.set_theme(SerialTFT.Theme.matrix)
-#CLOCK_BACKGROUND 	= SerialTFT.Color.user_1
-#CLOCK_OUTLINE		= SerialTFT.Color.user_6
-#CLOCK_CENTER		= SerialTFT.Color.user_2
-#CLOCK_NUMBERS		= SerialTFT.Color.user_4
-#CLOCK_DIGITAL		= SerialTFT.Color.user_5
-#CLOCK_HOUR_HAND		= SerialTFT.Color.user_2
-#CLOCK_MINUTE_HAND 	= SerialTFT.Color.user_2
-#CLOCK_SECOND_HAND 	= SerialTFT.Color.user_3
+#CLOCK_BACKGROUND 	= SerialTFT.Color.user_black
+#CLOCK_OUTLINE		= SerialTFT.Color.user_magenta
+#CLOCK_CENTER		= SerialTFT.Color.user_blue
+#CLOCK_NUMBERS		= SerialTFT.Color.user_green
+#CLOCK_DIGITAL		= SerialTFT.Color.user_blue
+#CLOCK_HOUR_HAND	= SerialTFT.Color.user_cyan
+#CLOCK_MINUTE_HAND 	= SerialTFT.Color.user_cyan
+#CLOCK_SECOND_HAND 	= SerialTFT.Color.user_red
 # -- END COLOR SETUP --
 
 # Clear Screen

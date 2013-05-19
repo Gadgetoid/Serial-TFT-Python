@@ -30,6 +30,7 @@ class SerialTFT:
 		landscape_upsidedown 	= 1
 		landscape 				= 3
 	class Color:
+		# Stock colours
 		black 	= 0
 		blue 	= 1
 		red 	= 2
@@ -38,6 +39,16 @@ class SerialTFT:
 		magenta = 5
 		yellow 	= 6
 		white 	= 7
+		# Useful for built-in themes that use a similar hue
+		user_black 		= 8
+		user_blue 		= 9
+		user_red 		= 10
+		user_green 		= 11
+		user_cyan 		= 12
+		user_magenta 	= 13
+		user_yellow 	= 14
+		user_white 		= 15
+		# Useful for arbitrary user colours
 		user_1 = 8
 		user_2 = 9
 		user_3 = 10
