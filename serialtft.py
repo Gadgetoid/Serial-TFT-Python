@@ -1,6 +1,6 @@
 # Hobbytronics TFT - driver library
 # Author: Philip Howard <phil@gadgetoid.com>
-# Version: 1.3
+# Version: 1.4
 # 1.1:	- Updated with Python 3 support
 #		- Added explicit int() casts
 # 1.2:	- Added deconstrutor and enter/exit 
@@ -13,7 +13,15 @@
 #		- Added optional color param to drawing
 #		commands, modified firmware only!
 #		This overrides the set fg color
-
+# 1.4:	- Added slicing of any text over 16 chars into
+#		16 char packets so it sends correctly 
+#		- Re-added draw_rect and draw_filled rect
+#		although rectangle drawing may behave
+#		unexpectedly across firmware versions
+#		- Treat the latter params of rect/box
+#		as width/height for modified firmware
+#		or x2,y2 for unmodified firmware
+ 
 import sys
 import math
 import time
@@ -136,12 +144,15 @@ class SerialTFT:
 		'''
 		packet_size = 16
 
-		text = [text[i:i+packet_size] for i in range(0, len(text), packet_size)]
+		if(len(text)<packet_size):
+			self._write(text)
+		else:
+			text = [text[i:i+packet_size] for i in range(0, len(text), packet_size)]
 		
-		for packet in text:
-			self._write(packet)
-			self.port.flush()
-			time.sleep(0.05)
+			for packet in text:
+				self._write(packet)
+				self.port.flush()
+				time.sleep(0.05)
 
 	def font_size(self,font_size):
 		'''
