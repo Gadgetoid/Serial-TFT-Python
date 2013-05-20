@@ -12,6 +12,7 @@
 # for full command details
 #
 
+import threading
 import time
 from time import localtime, strftime
 from serialtft import SerialTFT
@@ -57,18 +58,6 @@ tft.screen_rotation(SerialTFT.Rotation.landscape)
 tft.bg_color(CLOCK_BACKGROUND)
 tft.clear_screen()
 
-# Draw clock outline
-tft.fg_color(CLOCK_OUTLINE)
-tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS)
-
-# Fill clock with background
-tft.fg_color(CLOCK_BACKGROUND)
-tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-2)
-
-# Draw the hub at the clock center
-tft.fg_color(CLOCK_CENTER)
-tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,3)
-
 # Draw the numbers 12, 6, 3 and 9 around the clock in green
 tft.font_size(SerialTFT.Font.small)
 tft.fg_color(CLOCK_NUMBERS)
@@ -85,11 +74,24 @@ tft.write('3')
 tft.goto_pixel(SerialTFT.Screen.width_half-54,SerialTFT.Screen.height_half-3)
 tft.write('9')
 
-lasthour	= -1
-lastmin		= -1
-lastsec		= -1
+# Draw clock outline
+tft.fg_color(CLOCK_OUTLINE)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS)
 
-while 1:
+# Fill clock with background
+tft.fg_color(CLOCK_BACKGROUND)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,CLOCK_RADIUS-2)
+
+# Draw the hub at the clock center
+tft.fg_color(CLOCK_CENTER)
+tft.draw_filled_circle(CLOCK_ORIGIN_X,CLOCK_ORIGIN_Y,3)
+
+lasthour	= time.localtime().tm_hour
+lastmin		= time.localtime().tm_min
+lastsec		= time.localtime().tm_sec
+
+def tick():
+	global lasthour, lastmin, lastsec
 	currentmin	= time.localtime().tm_min
 	currentsec	= time.localtime().tm_sec
 	currenthour = time.localtime().tm_hour
@@ -134,5 +136,7 @@ while 1:
 	lastmin = currentmin
 	lastsec = currentsec
 	
-	time.sleep(1)
+	threading.Timer(1,tick).start()
+
+tick()
 
