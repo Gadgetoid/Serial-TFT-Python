@@ -1,6 +1,6 @@
 # Hobbytronics TFT - driver library
 # Author: Philip Howard <phil@gadgetoid.com>
-# Version: 1.3
+# Version: 1.4
 # 1.1:	- Updated with Python 3 support
 #		- Added explicit int() casts
 # 1.2:	- Added deconstrutor and enter/exit 
@@ -13,7 +13,15 @@
 #		- Added optional color param to drawing
 #		commands, modified firmware only!
 #		This overrides the set fg color
-
+# 1.4:	- Added slicing of any text over 16 chars into
+#		16 char packets so it sends correctly 
+#		- Re-added draw_rect and draw_filled rect
+#		although rectangle drawing may behave
+#		unexpectedly across firmware versions
+#		- Treat the latter params of rect/box
+#		as width/height for modified firmware
+#		or x2,y2 for unmodified firmware
+ 
 import sys
 import math
 import time
@@ -123,17 +131,28 @@ class SerialTFT:
 		'''
 		self._write(theme)
 
-	def write(self,text):
-		'''
-			Write a text string
-		'''
-		self._write(text)
-
 	def write_line(self,text):
 		'''
 			Write a text string followed by a carriage return
 		'''
-		self._write(text + chr(13))
+		text = text + chr(13)
+		self.write(text)
+
+	def write(self,text):
+		'''
+			Write a text string
+		'''
+		packet_size = 16
+
+		if(len(text)<packet_size):
+			self._write(text)
+		else:
+			text = [text[i:i+packet_size] for i in range(0, len(text), packet_size)]
+		
+			for packet in text:
+				self._write(packet)
+				self.port.flush()
+				time.sleep(0.05)
 
 	def font_size(self,font_size):
 		'''
@@ -254,12 +273,12 @@ class SerialTFT:
 		if(self.flush == False):
 			time.sleep(0.007)
 
-	#def draw_rect(self,x1,y1,width,height,color=-1):
-	#	x1 = int(x1)
-	#	y1 = int(y1)
-	#	width = int(width)
-	#	height = int(height)
-	#	self.draw_box(x1,y1,x1+width,y1+height,color)
+	def draw_rect(self,x1,y1,width,height,color=-1):
+		x1 = int(x1)
+		y1 = int(y1)
+		width = int(width)
+		height = int(height)
+		self.draw_box(x1,y1,width,height,color)
 
 	def draw_filled_box(self,x1,y1,x2,y2,color=-1):
 		'''
@@ -278,15 +297,15 @@ class SerialTFT:
 		if(self.flush == False):
 			time.sleep(0.06)
 
-	#def draw_filled_rect(self,x1,y1,width,height,color=-1):
-	#	'''
-	#		Draw a filled rectangle at x,y of size width,height
-	#	'''
-	#	x1 = int(x1)
-	#	y1 = int(y1)
-	#	width = int(width)
-	#	height = int(height)
-	#	self.draw_filled_box(x1,y1,x1+width,y1+height,color)
+	def draw_filled_rect(self,x1,y1,width,height,color=-1):
+		'''
+			Draw a filled rectangle at x,y of size width,height
+		'''
+		x1 = int(x1)
+		y1 = int(y1)
+		width = int(width)
+		height = int(height)
+		self.draw_filled_box(x1,y1,width,height,color)
 
 	def draw_circle(self,x,y,radius,color=-1):
 		'''

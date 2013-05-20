@@ -28,25 +28,36 @@ tft.bg_color(SerialTFT.Color.black)
 tft.clear_screen()
 
 colors = [
-	SerialTFT.Color.user_blue,
-	SerialTFT.Color.user_red,
-	SerialTFT.Color.user_green,
-	SerialTFT.Color.user_cyan,
-	SerialTFT.Color.user_magenta,
-	SerialTFT.Color.user_yellow,
-	SerialTFT.Color.user_white
+	SerialTFT.Color.blue,
+	SerialTFT.Color.red,
+	SerialTFT.Color.green,
+	SerialTFT.Color.cyan,
+	SerialTFT.Color.magenta,
+	SerialTFT.Color.yellow,
+	SerialTFT.Color.white
 ]
 
+tft.font_size(SerialTFT.Font.small)
+tft.fg_color(SerialTFT.Color.white)
+print('Drawing text')
+tft.write_line('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu turpis enim, at luctus quam. Mauris augue augue, blandit quis dictum in, accumsan eget odio. In id laoreet massa.')
+tft.font_size(SerialTFT.Font.medium)
+tft.write_line('Starting load tests')
+tft.font_size(SerialTFT.Font.large)
+tft.write_line('Soooon')
+time.sleep(5)
 
 print('Testing pixel draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,2000):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_pixel(randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -82,11 +93,13 @@ print('Testing box draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,200):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_box(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -102,11 +115,13 @@ print('Testing filled box draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,200):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_filled_box(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -123,11 +138,13 @@ print('Testing line draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,200):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_line(randint(0,tft.Screen.width),randint(0,tft.Screen.height),randint(0,tft.Screen.width),randint(0,tft.Screen.height),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -144,11 +161,13 @@ print('Testing circle draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,200):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -165,11 +184,13 @@ print('Testing filled circle draw rate')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,200):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		#tft.fg_color(color)
 		tft.draw_filled_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40),color)
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -189,11 +210,13 @@ print('Testing circle draw rate, flush enabled')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,100):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		tft.fg_color(color)
 		tft.draw_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40))
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))
@@ -209,11 +232,13 @@ print('Testing filled circle draw rate, flush enabled')
 result = []
 circle_count = 0
 last_sec = time.localtime().tm_sec
-for x in range(0,100):
+total_count = 0
+while len(result) < 10:
 	for color in colors:
 		tft.fg_color(color)
 		tft.draw_filled_circle(SerialTFT.Screen.width_half+randint(-50,50),SerialTFT.Screen.height_half+randint(-40,40),randint(1,40))
 		circle_count += 1
+		total_count += 1
 		if time.localtime().tm_sec !=last_sec:
 			last_sec = time.localtime().tm_sec
 			print('Drawn ' + str(circle_count))

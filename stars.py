@@ -23,7 +23,7 @@ from serialtft import SerialTFT
 # https://github.com/Gadgetoid/serial_tft_18/
 # You'll get a faster, monochrome starfield
 
-MY_FIRMWARE_IS_MODIFIED = True
+MY_FIRMWARE_IS_MODIFIED = False
 
 # Play with these values to change the star field
 # higher values look better, but will run much, much slower
