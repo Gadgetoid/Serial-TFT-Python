@@ -25,6 +25,7 @@
 import sys
 import math
 import time
+import unicodedata
 import serial
 import serialtft_themes
 from serialtft_constants import *
@@ -143,6 +144,8 @@ class SerialTFT:
 			Write a text string
 		'''
 		packet_size = 16
+
+		text = unicodedata.normalize('NFKD',text).encode('ascii','ignore')
 
 		if(len(text)<packet_size):
 			self._write(text)
