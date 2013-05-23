@@ -111,10 +111,15 @@ class SerialTFT:
 		'''
 			Wrapper for port.write to handle python3 requirement for byte array
 		'''
+		if(len(data) == 0):
+			return false;
 		if(self.python_major_version == 2):
 			self.port.write(data)
 		else:
-			self.port.write(bytes(data,'ISO-8859-1'))
+			if(isinstance(data,str)):
+				self.port.write(bytes(data,'ISO-8859-1'))
+			else:
+				self.port.write(data)
 		if(self.flush):
 			self.port.flush()
 
@@ -145,6 +150,8 @@ class SerialTFT:
 		'''
 		packet_size = 16
 
+		if( self.python_major_version == 2 ):
+			text = unicode(text)
 		text = unicodedata.normalize('NFKD',text).encode('ascii','ignore')
 
 		if(len(text)<packet_size):
